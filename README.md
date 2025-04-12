@@ -1,12 +1,12 @@
 # TeamDWordle
 By: Jennifer Alvarez and Kate Anglin
 
-#Provide a short summary of the project.
+# Provide a short summary of the project.
 
-#Describe how to turn on/of the conditional compilation for displaying the guess word to the console.
+# Describe how to turn on/of the conditional compilation for displaying the guess word to the console.
 
-#Describe what data structure you used to store the dictionary and why you chose that particular data structure.
-I chose to use the Trie structure. A trie (prefix tree) is a specialized tree used to store strings, particularly useful when dealing with a large set of words like those in a dictionary. 
+# Describe what data structure you used to store the dictionary and why you chose that particular data structure.
+We chose to use the Trie structure. A trie (prefix tree) is a specialized tree used to store strings, particularly useful when dealing with a large set of words like those in a dictionary. 
 1. Efficient Word Lookup Time complexity for lookup is O(L) where L is the length of the word.
     Unlike hash tables or balanced trees, performance does not depend on the number of words but on word length.
 2. Prefix Matching
@@ -19,6 +19,6 @@ I chose to use the Trie structure. A trie (prefix tree) is a specialized tree us
     Tries scale well with large datasets, such as thousands or millions of words.
     The performance remains consistent and predictable, which is valuable in interactive applications like GUI search boxes or text validators.
 
-#Provide a screen capture of your game.
+# Provide a screen capture of your game.
 
-#Provide a description of any WOW factor items.
+# Provide a description of any WOW factor items.
