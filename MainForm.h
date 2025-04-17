@@ -1,4 +1,5 @@
 #pragma once
+#include "Model/WordDictionary.h"
 
 namespace TeamDWordle {
 
@@ -15,25 +16,14 @@ namespace TeamDWordle {
 	public ref class MainForm : public System::Windows::Forms::Form
 	{
 	public:
-		MainForm(void)
-		{
-			InitializeComponent();
-			//
-			//TODO: Add the constructor code here
-			//
-		}
+		MainForm(void);
 
 	protected:
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
-		~MainForm()
-		{
-			if (components)
-			{
-				delete components;
-			}
-		}
+		~MainForm();
+
 	private: System::Windows::Forms::TableLayoutPanel^ guessGrid;
 	private: System::Windows::Forms::Label^ Guess1Tile1;
 	private: System::Windows::Forms::Label^ Guess1Tile2;
@@ -41,12 +31,6 @@ namespace TeamDWordle {
 	private: System::Windows::Forms::Label^ Guess1Tile4;
 	private: System::Windows::Forms::Label^ Guess1Tile5;
 	private: System::Windows::Forms::Label^ Guess2Tile2;
-
-
-
-
-
-
 	private: System::Windows::Forms::Label^ Guess2Tile1;
 	private: System::Windows::Forms::Label^ Guess2Tile3;
 	private: System::Windows::Forms::Label^ Guess2Tile4;
@@ -103,68 +87,7 @@ namespace TeamDWordle {
 	private: System::Windows::Forms::Button^ keyB;
 	private: System::Windows::Forms::Button^ keyN;
 	private: System::Windows::Forms::Button^ keyM;
-
-
-
-
-
-
-
-
 	private: System::Windows::Forms::Button^ keyBackspace;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	protected:
 
@@ -936,7 +859,7 @@ namespace TeamDWordle {
 			// 
 			this->keyA->BackColor = System::Drawing::Color::LightGray;
 			this->keyA->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->keyA->Font = (gcnew System::Drawing::Font(L"Arial", 16));
+			this->keyA->Font = (gcnew System::Drawing::Font(L"Arial", 14));
 			this->keyA->Location = System::Drawing::Point(2, 2);
 			this->keyA->Margin = System::Windows::Forms::Padding(2);
 			this->keyA->Name = L"keyA";
@@ -949,7 +872,7 @@ namespace TeamDWordle {
 			// 
 			this->keyS->BackColor = System::Drawing::Color::LightGray;
 			this->keyS->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->keyS->Font = (gcnew System::Drawing::Font(L"Arial", 16));
+			this->keyS->Font = (gcnew System::Drawing::Font(L"Arial", 14));
 			this->keyS->Location = System::Drawing::Point(47, 2);
 			this->keyS->Margin = System::Windows::Forms::Padding(2);
 			this->keyS->Name = L"keyS";
@@ -962,7 +885,7 @@ namespace TeamDWordle {
 			// 
 			this->keyD->BackColor = System::Drawing::Color::LightGray;
 			this->keyD->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->keyD->Font = (gcnew System::Drawing::Font(L"Arial", 16));
+			this->keyD->Font = (gcnew System::Drawing::Font(L"Arial", 14));
 			this->keyD->Location = System::Drawing::Point(92, 2);
 			this->keyD->Margin = System::Windows::Forms::Padding(2);
 			this->keyD->Name = L"keyD";
@@ -975,7 +898,7 @@ namespace TeamDWordle {
 			// 
 			this->keyF->BackColor = System::Drawing::Color::LightGray;
 			this->keyF->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->keyF->Font = (gcnew System::Drawing::Font(L"Arial", 16));
+			this->keyF->Font = (gcnew System::Drawing::Font(L"Arial", 14));
 			this->keyF->Location = System::Drawing::Point(137, 2);
 			this->keyF->Margin = System::Windows::Forms::Padding(2);
 			this->keyF->Name = L"keyF";
@@ -988,7 +911,7 @@ namespace TeamDWordle {
 			// 
 			this->keyG->BackColor = System::Drawing::Color::LightGray;
 			this->keyG->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->keyG->Font = (gcnew System::Drawing::Font(L"Arial", 16));
+			this->keyG->Font = (gcnew System::Drawing::Font(L"Arial", 14));
 			this->keyG->Location = System::Drawing::Point(182, 2);
 			this->keyG->Margin = System::Windows::Forms::Padding(2);
 			this->keyG->Name = L"keyG";
@@ -1001,7 +924,7 @@ namespace TeamDWordle {
 			// 
 			this->keyH->BackColor = System::Drawing::Color::LightGray;
 			this->keyH->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->keyH->Font = (gcnew System::Drawing::Font(L"Arial", 16));
+			this->keyH->Font = (gcnew System::Drawing::Font(L"Arial", 14));
 			this->keyH->Location = System::Drawing::Point(227, 2);
 			this->keyH->Margin = System::Windows::Forms::Padding(2);
 			this->keyH->Name = L"keyH";
@@ -1014,7 +937,7 @@ namespace TeamDWordle {
 			// 
 			this->keyJ->BackColor = System::Drawing::Color::LightGray;
 			this->keyJ->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->keyJ->Font = (gcnew System::Drawing::Font(L"Arial", 16));
+			this->keyJ->Font = (gcnew System::Drawing::Font(L"Arial", 14));
 			this->keyJ->Location = System::Drawing::Point(272, 2);
 			this->keyJ->Margin = System::Windows::Forms::Padding(2);
 			this->keyJ->Name = L"keyJ";
@@ -1026,7 +949,7 @@ namespace TeamDWordle {
 			// keyK
 			// 
 			this->keyK->BackColor = System::Drawing::Color::LightGray;
-			this->keyK->Font = (gcnew System::Drawing::Font(L"Arial", 16));
+			this->keyK->Font = (gcnew System::Drawing::Font(L"Arial", 14));
 			this->keyK->Location = System::Drawing::Point(317, 2);
 			this->keyK->Margin = System::Windows::Forms::Padding(2);
 			this->keyK->Name = L"keyK";
@@ -1038,7 +961,7 @@ namespace TeamDWordle {
 			// keyL
 			// 
 			this->keyL->BackColor = System::Drawing::Color::LightGray;
-			this->keyL->Font = (gcnew System::Drawing::Font(L"Arial", 16));
+			this->keyL->Font = (gcnew System::Drawing::Font(L"Arial", 14));
 			this->keyL->Location = System::Drawing::Point(362, 2);
 			this->keyL->Margin = System::Windows::Forms::Padding(2);
 			this->keyL->Name = L"keyL";
@@ -1087,7 +1010,7 @@ namespace TeamDWordle {
 			// keyEnter
 			// 
 			this->keyEnter->BackColor = System::Drawing::Color::LightGray;
-			this->keyEnter->Font = (gcnew System::Drawing::Font(L"Arial", 10, System::Drawing::FontStyle::Bold));
+			this->keyEnter->Font = (gcnew System::Drawing::Font(L"Arial", 9, System::Drawing::FontStyle::Bold));
 			this->keyEnter->Location = System::Drawing::Point(2, 2);
 			this->keyEnter->Margin = System::Windows::Forms::Padding(2);
 			this->keyEnter->Name = L"keyEnter";
@@ -1099,7 +1022,7 @@ namespace TeamDWordle {
 			// keyZ
 			// 
 			this->keyZ->BackColor = System::Drawing::Color::LightGray;
-			this->keyZ->Font = (gcnew System::Drawing::Font(L"Arial", 16));
+			this->keyZ->Font = (gcnew System::Drawing::Font(L"Arial", 14));
 			this->keyZ->Location = System::Drawing::Point(70, 2);
 			this->keyZ->Margin = System::Windows::Forms::Padding(2);
 			this->keyZ->Name = L"keyZ";
@@ -1111,7 +1034,7 @@ namespace TeamDWordle {
 			// keyX
 			// 
 			this->keyX->BackColor = System::Drawing::Color::LightGray;
-			this->keyX->Font = (gcnew System::Drawing::Font(L"Arial", 16));
+			this->keyX->Font = (gcnew System::Drawing::Font(L"Arial", 14));
 			this->keyX->Location = System::Drawing::Point(115, 2);
 			this->keyX->Margin = System::Windows::Forms::Padding(2);
 			this->keyX->Name = L"keyX";
@@ -1123,7 +1046,7 @@ namespace TeamDWordle {
 			// keyC
 			// 
 			this->keyC->BackColor = System::Drawing::Color::LightGray;
-			this->keyC->Font = (gcnew System::Drawing::Font(L"Arial", 16));
+			this->keyC->Font = (gcnew System::Drawing::Font(L"Arial", 14));
 			this->keyC->Location = System::Drawing::Point(160, 2);
 			this->keyC->Margin = System::Windows::Forms::Padding(2);
 			this->keyC->Name = L"keyC";
@@ -1135,7 +1058,7 @@ namespace TeamDWordle {
 			// keyV
 			// 
 			this->keyV->BackColor = System::Drawing::Color::LightGray;
-			this->keyV->Font = (gcnew System::Drawing::Font(L"Arial", 16));
+			this->keyV->Font = (gcnew System::Drawing::Font(L"Arial", 14));
 			this->keyV->Location = System::Drawing::Point(205, 2);
 			this->keyV->Margin = System::Windows::Forms::Padding(2);
 			this->keyV->Name = L"keyV";
@@ -1147,7 +1070,7 @@ namespace TeamDWordle {
 			// keyB
 			// 
 			this->keyB->BackColor = System::Drawing::Color::LightGray;
-			this->keyB->Font = (gcnew System::Drawing::Font(L"Arial", 16));
+			this->keyB->Font = (gcnew System::Drawing::Font(L"Arial", 14));
 			this->keyB->Location = System::Drawing::Point(250, 2);
 			this->keyB->Margin = System::Windows::Forms::Padding(2);
 			this->keyB->Name = L"keyB";
@@ -1159,7 +1082,7 @@ namespace TeamDWordle {
 			// keyN
 			// 
 			this->keyN->BackColor = System::Drawing::Color::LightGray;
-			this->keyN->Font = (gcnew System::Drawing::Font(L"Arial", 16));
+			this->keyN->Font = (gcnew System::Drawing::Font(L"Arial", 14));
 			this->keyN->Location = System::Drawing::Point(295, 2);
 			this->keyN->Margin = System::Windows::Forms::Padding(2);
 			this->keyN->Name = L"keyN";
@@ -1171,7 +1094,7 @@ namespace TeamDWordle {
 			// keyM
 			// 
 			this->keyM->BackColor = System::Drawing::Color::LightGray;
-			this->keyM->Font = (gcnew System::Drawing::Font(L"Arial", 16));
+			this->keyM->Font = (gcnew System::Drawing::Font(L"Arial", 14));
 			this->keyM->Location = System::Drawing::Point(340, 2);
 			this->keyM->Margin = System::Windows::Forms::Padding(2);
 			this->keyM->Name = L"keyM";
@@ -1183,13 +1106,13 @@ namespace TeamDWordle {
 			// keyBackspace
 			// 
 			this->keyBackspace->BackColor = System::Drawing::Color::LightGray;
-			this->keyBackspace->Font = (gcnew System::Drawing::Font(L"Arial", 10, System::Drawing::FontStyle::Bold));;
+			this->keyBackspace->Font = (gcnew System::Drawing::Font(L"Arial", 9, System::Drawing::FontStyle::Bold));;
 			this->keyBackspace->Location = System::Drawing::Point(385, 2);
 			this->keyBackspace->Margin = System::Windows::Forms::Padding(2);
 			this->keyBackspace->Name = L"keyBackspace";
 			this->keyBackspace->Size = System::Drawing::Size(61, 61);
 			this->keyBackspace->TabIndex = 8;
-			this->keyBackspace->Text = L"Delete";
+			this->keyBackspace->Text = L"DELETE";
 			this->keyBackspace->UseVisualStyleBackColor = false;
 			// 
 			// MainForm
@@ -1214,6 +1137,16 @@ namespace TeamDWordle {
 		}
 
 #pragma endregion
+		System::Collections::Generic::List<System::Windows::Forms::Label^>^ currentRowTiles;
+		Model::WordDictionary* myDictionary;
+		int currentRowIndex;
+
+		void letterButton_Click(System::Object^ sender, System::EventArgs^ e);
+		void processLetterInput(wchar_t letter);
+		void mainForm_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e);
+		void enterButton_Click(System::Object^ sender, System::EventArgs^ e);
+		void deleteButton_Click(System::Object^ sender, System::EventArgs^ e);
+
 	private: System::Void MainForm_Load(System::Object^ sender, System::EventArgs^ e) {
 	}
 
