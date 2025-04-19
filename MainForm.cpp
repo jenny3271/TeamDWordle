@@ -1,5 +1,6 @@
 #include "MainForm.h"
 #include "Model/WordDictionary.h"
+#include "Model/WordleManager.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
@@ -8,10 +9,45 @@ int main(array<String^>^ args)
 {
 	// Initialize the WordDictionary and load the dictionary file FOR TESTING
     Model::WordDictionary dict;
-	System::Diagnostics::Debug::WriteLine("loaded file: " + dict.load("./dictionary.txt"));//TRUE
-	System::Diagnostics::Debug::WriteLine("dictionary contains apple: " + dict.contains("apple"));//TRUE
-	System::Diagnostics::Debug::WriteLine("dictionary contains appl: " + dict.contains("appl"));//FALSE
-	System::Diagnostics::Debug::WriteLine("dictionary contains sense: " + dict.contains("sense"));//TRUE
+	System::Diagnostics::Debug::WriteLine("loaded file: " + dict.Load("./dictionary.txt", 5));//TRUE
+	System::Diagnostics::Debug::WriteLine("dictionary contains apple: " + dict.Contains("apple"));//TRUE
+	System::Diagnostics::Debug::WriteLine("dictionary contains appl: " + dict.Contains("appl"));//FALSE
+	System::Diagnostics::Debug::WriteLine("dictionary contains sense: " + dict.Contains("sense"));//TRUE
+
+    try {
+        System::Diagnostics::Debug::WriteLine("dictionary random word: " + gcnew System::String(dict.GetRandomWord().c_str()));
+        std::string randomWord = dict.GetRandomWord();  
+        if (!randomWord.empty()) {  
+           System::Diagnostics::Debug::WriteLine("dictionary random word: " + gcnew System::String(randomWord.c_str()));  
+        } else {  
+           System::Diagnostics::Debug::WriteLine("dictionary random word: <empty>");  
+        }
+    } catch (const std::exception& e) {
+        System::Diagnostics::Debug::WriteLine("An error occurred: " + gcnew System::String(e.what()));
+    }
+
+    // Model::WordleManager wordleManager;
+    // wordleManager.setRandomWord();//rando
+    // Model::WordleManager game;
+    // std::vector<std::string> testGuesses = {
+    //     "alert", "apply", "apple", "rando"
+    // };
+
+    // for (const std::string& guess : testGuesses) {
+    //     System::Diagnostics::Debug::WriteLine("Guessing: ");
+    //     game.Guess(guess);
+
+    //     auto feedback = game.getLastFeedback();
+    //     System::Diagnostics::Debug::WriteLine("Feedback: ");
+    //     for (auto f : feedback) {
+    //         switch (f) {
+    //         case Model::Feedback::Correct: System::Diagnostics::Debug::WriteLine( "[C] "); break;
+    //         case Model::Feedback::WrongPosition: System::Diagnostics::Debug::WriteLine("[I] "); break;
+    //         case Model::Feedback::Incorrect: System::Diagnostics::Debug::WriteLine("[X] "); break;
+    //         }
+    //     }
+    // }
+
 
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
@@ -28,7 +64,7 @@ namespace  TeamDWordle
 		InitializeComponent();
 
 		this->myDictionary = new Model::WordDictionary();
-		this->myDictionary->load("./dictionary.txt");
+		this->myDictionary->Load("./dictionary.txt", 5);
 
 		this->KeyPreview = true;
 		this->KeyDown += gcnew KeyEventHandler(this, &MainForm::mainForm_KeyDown);
@@ -132,7 +168,7 @@ namespace  TeamDWordle
 		}
 
 
-		if (!this->myDictionary->contains(guess))
+		if (!this->myDictionary->Contains(guess))
 		{
 			MessageBox::Show("Not in Word List.", "Invalid guess");
 			return;

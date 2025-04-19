@@ -32,8 +32,9 @@ namespace Model {
 		///     Loads the specified filename.
 		/// </summary>
 		/// <param name="filename">The filename.</param>
+		/// /// <param name="wordSize">Size of the word.</param>
 		/// <returns>true if loaded; false otherwise</returns>
-		bool load(const std::string& filename);
+		bool Load(const std::string& filename, int wordSize);
 		
 		/// <summary>
 		///     Determines whether [contains] [the specified word].
@@ -42,7 +43,13 @@ namespace Model {
 		/// <returns>
 		///   <c>true</c> if [contains] [the specified word]; otherwise, <c>false</c>.
 		/// </returns>
-		bool contains(const std::string& word) const;
+		bool Contains(const std::string& word) const;
+		
+		/// <summary>
+		///     Gets the random word.
+		/// </summary>
+		/// <returns>random word</returns>
+		std::string GetRandomWord() const;
 	};
 }
 

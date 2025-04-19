@@ -123,6 +123,7 @@
     <ClCompile Include="MainForm.cpp" />
     <ClCompile Include="Model\TrieNode.cpp" />
     <ClCompile Include="Model\WordDictionary.cpp" />
+    <ClCompile Include="Model\WordleManager.cpp" />
     <ClCompile Include="Model\WordTrie.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -131,6 +132,7 @@
     </ClInclude>
     <ClInclude Include="Model\TrieNode.h" />
     <ClInclude Include="Model\WordDictionary.h" />
+    <ClInclude Include="Model\WordleManager.h" />
     <ClInclude Include="Model\WordTrie.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,5 @@
 #include "WordTrie.h"
+#include <iostream>
 
 namespace Model {
 
@@ -37,6 +38,44 @@ namespace Model {
             deleteTrie(pair.second);
         }
         delete node;
+    }
+
+    std::string WordTrie::GetRandomWord() const {
+        std::string randomWord;
+        TrieNode* current = root;
+
+        while (true) {
+            if (current->isEndOfWord) {
+                if (current->children.empty()) {
+                    break; // or handle the case where no children exist
+                }
+                int randomIndex = rand() % current->children.size();
+                int i = 0;
+                for (auto& pair : current->children) {
+                    if (i == randomIndex) {
+                        randomWord += pair.first;
+                        current = pair.second;
+                        break;
+                    }
+                    i++;
+                }
+
+				if (current->isEndOfWord) {
+                    std::cout << "Random word found: " << randomWord << std::endl;
+                    return randomWord;
+                }
+            }
+
+            if (current->children.empty()) {
+                return "";
+            }
+
+            int randomChildIndex = rand() % current->children.size();
+            auto it = current->children.begin();
+            std::advance(it, randomChildIndex);
+            randomWord += it->first;
+            current = it->second;
+        }
     }
 
 };

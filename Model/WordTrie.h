@@ -44,6 +44,12 @@ namespace Model {
         /// <param name="word">The word.</param>
         /// <returns>true if found; false otherwise</returns>
         bool Search(const std::string& word) const;
+        
+        /// <summary>
+        ///     Gets the random word.
+        /// </summary>
+        /// <returns>a random word</returns>
+        std::string GetRandomWord() const;
     };
 
 };
