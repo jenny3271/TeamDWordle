@@ -88,6 +88,8 @@ namespace TeamDWordle {
 	private: System::Windows::Forms::Button^ keyN;
 	private: System::Windows::Forms::Button^ keyM;
 	private: System::Windows::Forms::Button^ keyBackspace;
+	private: System::Windows::Forms::Button^ bttnNewGame;
+	private: System::Windows::Forms::Button^ bttnExitGame;
 
 	protected:
 
@@ -168,6 +170,8 @@ namespace TeamDWordle {
 			this->keyN = (gcnew System::Windows::Forms::Button());
 			this->keyM = (gcnew System::Windows::Forms::Button());
 			this->keyBackspace = (gcnew System::Windows::Forms::Button());
+			this->bttnNewGame = (gcnew System::Windows::Forms::Button());
+			this->bttnExitGame = (gcnew System::Windows::Forms::Button());
 			this->guessGrid->SuspendLayout();
 			this->keyboardPanelRow1->SuspendLayout();
 			this->keyboardPanelRow2->SuspendLayout();
@@ -213,7 +217,7 @@ namespace TeamDWordle {
 			this->guessGrid->Controls->Add(this->Guess6Tile4, 3, 5);
 			this->guessGrid->Controls->Add(this->Guess6Tile5, 4, 5);
 			this->guessGrid->Controls->Add(this->Guess1Tile1, 0, 0);
-			this->guessGrid->Location = System::Drawing::Point(150, 50);
+			this->guessGrid->Location = System::Drawing::Point(150, 75);
 			this->guessGrid->Name = L"guessGrid";
 			this->guessGrid->RowCount = 6;
 			this->guessGrid->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 16.67F)));
@@ -1106,7 +1110,7 @@ namespace TeamDWordle {
 			// keyBackspace
 			// 
 			this->keyBackspace->BackColor = System::Drawing::Color::LightGray;
-			this->keyBackspace->Font = (gcnew System::Drawing::Font(L"Arial", 9, System::Drawing::FontStyle::Bold));;
+			this->keyBackspace->Font = (gcnew System::Drawing::Font(L"Arial", 9, System::Drawing::FontStyle::Bold));
 			this->keyBackspace->Location = System::Drawing::Point(385, 2);
 			this->keyBackspace->Margin = System::Windows::Forms::Padding(2);
 			this->keyBackspace->Name = L"keyBackspace";
@@ -1115,15 +1119,38 @@ namespace TeamDWordle {
 			this->keyBackspace->Text = L"DELETE";
 			this->keyBackspace->UseVisualStyleBackColor = false;
 			// 
+			// bttnNewGame
+			// 
+			this->bttnNewGame->Font = (gcnew System::Drawing::Font(L"Arial", 9, System::Drawing::FontStyle::Bold));
+			this->bttnNewGame->Location = System::Drawing::Point(5, 5);
+			this->bttnNewGame->Name = L"bttnNewGame";
+			this->bttnNewGame->Size = System::Drawing::Size(100, 35);
+			this->bttnNewGame->TabIndex = 4;
+			this->bttnNewGame->Text = L"New Game";
+			this->bttnNewGame->UseVisualStyleBackColor = true;
+			// 
+			// bttnExitGame
+			// 
+			this->bttnExitGame->Font = (gcnew System::Drawing::Font(L"Arial", 9, System::Drawing::FontStyle::Bold));
+			this->bttnExitGame->Location = System::Drawing::Point(495, 5);
+			this->bttnExitGame->Name = L"bttnExitGame";
+			this->bttnExitGame->Size = System::Drawing::Size(100, 35);
+			this->bttnExitGame->TabIndex = 5;
+			this->bttnExitGame->Text = L"Exit Game";
+			this->bttnExitGame->UseVisualStyleBackColor = true;
+			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(600, 700);
+			this->Controls->Add(this->bttnExitGame);
+			this->Controls->Add(this->bttnNewGame);
 			this->Controls->Add(this->keyboardPanelRow3);
 			this->Controls->Add(this->keyboardPanelRow2);
 			this->Controls->Add(this->keyboardPanelRow1);
 			this->Controls->Add(this->guessGrid);
+			this->Location = System::Drawing::Point(5, 5);
 			this->Margin = System::Windows::Forms::Padding(2);
 			this->Name = L"MainForm";
 			this->Text = L"Wordle by Team D";
@@ -1141,6 +1168,8 @@ namespace TeamDWordle {
 		Model::WordDictionary* myDictionary;
 		int currentRowIndex;
 
+		void exitGameButton_Click(System::Object^ sender, System::EventArgs^ e);
+		void newGameButton_Click(System::Object^ sender, System::EventArgs^ e);
 		void letterButton_Click(System::Object^ sender, System::EventArgs^ e);
 		void processLetterInput(wchar_t letter);
 		void mainForm_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e);

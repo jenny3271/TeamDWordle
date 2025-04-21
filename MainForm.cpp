@@ -85,7 +85,8 @@ namespace  TeamDWordle
 
 		this->keyEnter->Click += gcnew EventHandler(this, &MainForm::enterButton_Click);
 		this->keyBackspace->Click += gcnew EventHandler(this, &MainForm::deleteButton_Click);
-
+		this->bttnNewGame->Click += gcnew EventHandler(this, &MainForm::newGameButton_Click);
+		this->bttnExitGame->Click += gcnew EventHandler(this, &MainForm::exitGameButton_Click);
 		this->ActiveControl = this->keyEnter;  
 	}
 
@@ -255,4 +256,41 @@ namespace  TeamDWordle
 			}
 		}
 	}
+
+	void MainForm::newGameButton_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		this->currentRowIndex = 0;
+		this->currentRowTiles->Clear();
+		this->currentRowTiles->AddRange(gcnew array<Label^> {
+			this->Guess1Tile1,
+				this->Guess1Tile2,
+				this->Guess1Tile3,
+				this->Guess1Tile4,
+				this->Guess1Tile5
+		});
+
+		for each (Control ^ ctl in this->guessGrid->Controls)
+		{
+			if (auto lbl = dynamic_cast<Label^>(ctl))
+			{
+				lbl->Text = L"";
+				lbl->BackColor = System::Drawing::Color::White;
+			}
+		}
+
+		// TODO: reset the game state in WordleManager and set a new random word
+
+		MessageBox::Show("New game started!", "Reset", MessageBoxButtons::OK, MessageBoxIcon::Information);
+
+		this->ActiveControl = this->keyEnter;
+	}
+
+	void MainForm::exitGameButton_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		if (MessageBox::Show("Are you sure you want to exit?", "Exit Game", MessageBoxButtons::YesNo, MessageBoxIcon::Warning) == System::Windows::Forms::DialogResult::Yes)
+		{
+			Application::Exit();
+		}
+	}
+
 }
