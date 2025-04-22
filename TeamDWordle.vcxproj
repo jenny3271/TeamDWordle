@@ -125,6 +125,7 @@
     <ClCompile Include="Model\WordDictionary.cpp" />
     <ClCompile Include="Model\WordleManager.cpp" />
     <ClCompile Include="Model\WordTrie.cpp" />
+    <ClCompile Include="View\StatisticsForm.cpp" />
     <ClCompile Include="View\UserProfileForm.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +136,9 @@
     <ClInclude Include="Model\WordDictionary.h" />
     <ClInclude Include="Model\WordleManager.h" />
     <ClInclude Include="Model\WordTrie.h" />
+    <ClInclude Include="View\StatisticsForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="View\UserProfileForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -142,6 +146,9 @@
   <ItemGroup>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\StatisticsForm.resx">
+      <DependentUpon>View\StatisticsForm.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\UserProfileForm.resx">
       <DependentUpon>View\UserProfileForm.h</DependentUpon>

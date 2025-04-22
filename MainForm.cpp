@@ -57,7 +57,6 @@ int main(array<String^>^ args)
 	// TODO This currently shows the login dialog first (no actual username tracking yet). Need to implement username tracking and allow reuse of letters.
 	::View::UserProfileForm^ login = gcnew ::View::UserProfileForm();
 	login->ShowDialog();
-
 	
 	TeamDWordle::MainForm^ game = gcnew TeamDWordle::MainForm();
 	Application::Run(game);
