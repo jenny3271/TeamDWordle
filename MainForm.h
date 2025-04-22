@@ -18,11 +18,7 @@ namespace TeamDWordle {
 	public:
 		MainForm(void);
 
-		MainForm(System::String^ username, bool allowReuse)
-			: MainForm()
-		{
-			//TODO track usernames and allowReuse
-		}
+		MainForm(System::String^ username, bool allowReuseLetters);
 
 	protected:
 		/// <summary>
@@ -102,6 +98,9 @@ namespace TeamDWordle {
 	protected:
 
 	private:
+		System::String^ username;
+		bool allowReuseLetters;
+
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -1173,8 +1172,10 @@ namespace TeamDWordle {
 		System::Collections::Generic::List<System::Windows::Forms::Label^>^ currentRowTiles;
 		Model::WordDictionary* myDictionary;
 		int currentRowIndex;
-		System::String^ currentUser;
-		bool allowReuseLetters;
+		static bool isRowComplete(Generic::List<Label^>^ rowTiles);
+
+		void setupUI();
+		void setCurrentRowTiles(int index);
 
 		void exitGameButton_Click(System::Object^ sender, System::EventArgs^ e);
 		void newGameButton_Click(System::Object^ sender, System::EventArgs^ e);
