@@ -43,7 +43,11 @@ namespace Model {
 	}
 
 	void Model::WordleManager::setRandomWord() {
-		this->answer = this->wordDict.GetRandomWord();
+
+        this->answer = *(this->wordDict.GetRandomWord());
+		
+		this->answer = toLowerCase(this->answer);
+		
 		this->guesses.clear();
 		this->result = "";
 		this->lastFeedback.clear();

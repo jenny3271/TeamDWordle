@@ -24,7 +24,6 @@ namespace Model {
 				if (word.size() == wordSize) {
                     trie->Insert(word);
 				}
-				
 			}
 		}
 
@@ -36,7 +35,7 @@ namespace Model {
 		return trie->Search(word);
 	}
 
-	std::string WordDictionary::GetRandomWord() const {
+	std::string* WordDictionary::GetRandomWord() const {
 		return trie->GetRandomWord();
 	}
 

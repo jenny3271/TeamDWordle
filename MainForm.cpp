@@ -16,19 +16,10 @@ int main(array<String^>^ args)
 	System::Diagnostics::Debug::WriteLine("dictionary contains appl: " + dict.Contains("appl"));//FALSE
 	System::Diagnostics::Debug::WriteLine("dictionary contains sense: " + dict.Contains("sense"));//TRUE
 
-    try {
-        System::Diagnostics::Debug::WriteLine("dictionary random word: " + gcnew System::String(dict.GetRandomWord().c_str()));
-        std::string randomWord = dict.GetRandomWord();  
-        if (!randomWord.empty()) {  
-           System::Diagnostics::Debug::WriteLine("dictionary random word: " + gcnew System::String(randomWord.c_str()));  
-        } else {  
-           System::Diagnostics::Debug::WriteLine("dictionary random word: <empty>");  
-        }
-    } catch (const std::exception& e) {
-        System::Diagnostics::Debug::WriteLine("An error occurred: " + gcnew System::String(e.what()));
-    }
+    std::string* randomWord = dict.GetRandomWord();  
+    System::Diagnostics::Debug::WriteLine("dictionary random word: " + gcnew System::String(randomWord->c_str()));
 
-    // Model::WordleManager wordleManager;
+    //Model::WordleManager wordleManager;
     // wordleManager.setRandomWord();//rando
     // Model::WordleManager game;
     // std::vector<std::string> testGuesses = {
@@ -61,6 +52,7 @@ int main(array<String^>^ args)
 	TeamDWordle::MainForm^ game = gcnew TeamDWordle::MainForm();
 	Application::Run(game);
 
+	delete randomWord;
 	return 0;
 }
 

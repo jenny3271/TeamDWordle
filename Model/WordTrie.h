@@ -49,7 +49,7 @@ namespace Model {
         ///     Gets the random word.
         /// </summary>
         /// <returns>a random word</returns>
-        std::string GetRandomWord() const;
+        std::string* GetRandomWord() const;
     };
 
 };
