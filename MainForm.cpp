@@ -1,10 +1,12 @@
 #include "MainForm.h"
 #include "Model/WordDictionary.h"
 #include "Model/WordleManager.h"
+#include "View/UserProfileForm.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
 
+[STAThread]
 int main(array<String^>^ args)
 {
 	// Initialize the WordDictionary and load the dictionary file FOR TESTING
@@ -51,8 +53,14 @@ int main(array<String^>^ args)
 
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
-	TeamDWordle::MainForm form;
-	Application::Run(% form);
+
+	// TODO This currently shows the login dialog first (no actual username tracking yet). Need to implement username tracking and allow reuse of letters.
+	::View::UserProfileForm^ login = gcnew ::View::UserProfileForm();
+	login->ShowDialog();
+
+	
+	TeamDWordle::MainForm^ game = gcnew TeamDWordle::MainForm();
+	Application::Run(game);
 
 	return 0;
 }

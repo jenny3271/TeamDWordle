@@ -16,6 +16,9 @@
     <Filter Include="Source Files\Model">
       <UniqueIdentifier>{94f951e9-68e4-4390-9d66-79f647438117}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\View">
+      <UniqueIdentifier>{925522eb-ec45-4a02-ad92-efdd92d59fa8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainForm.cpp">
@@ -33,6 +36,9 @@
     <ClCompile Include="Model\WordleManager.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
+    <ClCompile Include="View\UserProfileForm.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainForm.h">
@@ -48,6 +54,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Model\WordleManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="View\UserProfileForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
