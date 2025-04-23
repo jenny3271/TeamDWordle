@@ -240,13 +240,13 @@ namespace  TeamDWordle
 			case Model::Feedback::WrongPosition:
 				if (currentColor != System::Drawing::ColorTranslator::FromHtml("#6CA965"))
 					newColor = System::Drawing::ColorTranslator::FromHtml("#C8B653");
-				keyButton->ForeColor = System::Drawing::Color::White;
+					keyButton->ForeColor = System::Drawing::Color::White;
 				break;
 			case Model::Feedback::Incorrect:
 				if (currentColor != System::Drawing::ColorTranslator::FromHtml("#6CA965") &&
 					currentColor != System::Drawing::ColorTranslator::FromHtml("#C8B653"))
 					newColor = System::Drawing::ColorTranslator::FromHtml("#787C7F");
-				keyButton->ForeColor = System::Drawing::Color::White;
+					keyButton->ForeColor = System::Drawing::Color::White;
 				break;
 			default:
 				continue;
@@ -308,12 +308,14 @@ namespace  TeamDWordle
 			{
 				lbl->Text = L"";
 				lbl->BackColor = System::Drawing::Color::White;
+				lbl->ForeColor = System::Drawing::Color::Black;
 			}
 		}
 
 		for each (Button ^ key in this->letterKeys->Values)
 		{
-			key->BackColor = System::Drawing::Color::White;
+			key->BackColor = System::Drawing::Color::LightGray;
+			key->ForeColor = System::Drawing::SystemColors::ControlText;
 		}
 
 		this->myManager->setRandomWord();

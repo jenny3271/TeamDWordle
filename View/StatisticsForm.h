@@ -59,15 +59,6 @@ namespace View {
 	private: System::Windows::Forms::Button^ playAgainBttn;
 	private: System::Windows::Forms::Button^ exitGameBttn;
 
-
-
-
-
-
-
-
-
-
 	protected:
 
 	protected:
@@ -381,6 +372,7 @@ namespace View {
 			this->Controls->Add(this->winLabel);
 			this->Controls->Add(this->statsLabel);
 			this->Name = L"StatisticsForm";
+			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"StatisticsForm";
 			this->Load += gcnew System::EventHandler(this, &StatisticsForm::StatisticsForm_Load);
 			this->ResumeLayout(false);

@@ -81,7 +81,7 @@ namespace View {
 			// 
 			// startGamebttn
 			// 
-			this->startGamebttn->Location = System::Drawing::Point(162, 100);
+			this->startGamebttn->Location = System::Drawing::Point(125, 99);
 			this->startGamebttn->Name = L"startGamebttn";
 			this->startGamebttn->Size = System::Drawing::Size(75, 25);
 			this->startGamebttn->TabIndex = 3;
@@ -92,12 +92,13 @@ namespace View {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(384, 136);
+			this->ClientSize = System::Drawing::Size(334, 136);
 			this->Controls->Add(this->startGamebttn);
 			this->Controls->Add(this->checkReuseLetters);
 			this->Controls->Add(this->usernameTextBox);
 			this->Controls->Add(this->labelPrompt);
 			this->Name = L"UserProfileForm";
+			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"Wordle by Team D";
 			this->Load += gcnew System::EventHandler(this, &UserProfileForm::UserProfileForm_Load);
 			this->ResumeLayout(false);

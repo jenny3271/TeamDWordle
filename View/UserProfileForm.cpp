@@ -9,8 +9,8 @@ namespace View
 	UserProfileForm::UserProfileForm(void)
 	{
 		InitializeComponent();
-
 		this->startGamebttn->Click += gcnew System::EventHandler(this, &UserProfileForm::startGameButton_Click);
+		this->AcceptButton = this->startGamebttn;
 	}
 
 	UserProfileForm::~UserProfileForm()

@@ -1159,6 +1159,7 @@ namespace TeamDWordle {
 			this->Location = System::Drawing::Point(5, 5);
 			this->Margin = System::Windows::Forms::Padding(2);
 			this->Name = L"MainForm";
+			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"Wordle by Team D";
 			this->Load += gcnew System::EventHandler(this, &MainForm::MainForm_Load);
 			this->guessGrid->ResumeLayout(false);
