@@ -1171,6 +1171,7 @@ namespace TeamDWordle {
 
 #pragma endregion
 		System::Collections::Generic::List<System::Windows::Forms::Label^>^ currentRowTiles;
+		System::Collections::Generic::Dictionary<wchar_t, Button^>^ letterKeys;
 		Model::WordDictionary* myDictionary;
 		Model::WordleManager* myManager;
 		int currentRowIndex;

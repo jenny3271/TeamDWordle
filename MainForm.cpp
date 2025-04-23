@@ -60,12 +60,22 @@ namespace  TeamDWordle
 			this->Guess1Tile1, this->Guess1Tile2, this->Guess1Tile3, this->Guess1Tile4, this->Guess1Tile5
 		});
 
-		for each (Button ^ key in gcnew array<Button^>{
+		this->letterKeys = gcnew System::Collections::Generic::Dictionary<wchar_t, Button^>();
+
+		array<Button^>^ keys = gcnew array<Button^>{
 			this->keyQ, this->keyW, this->keyE, this->keyR, this->keyT, this->keyY, this->keyU, this->keyI, this->keyO, this->keyP,
-				this->keyA, this->keyS, this->keyD, this->keyF, this->keyG, this->keyH, this->keyJ, this->keyK, this->keyL,
-				this->keyZ, this->keyX, this->keyC, this->keyV, this->keyB, this->keyN, this->keyM })
+		    this->keyA, this->keyS, this->keyD, this->keyF, this->keyG, this->keyH, this->keyJ, this->keyK, this->keyL,
+			this->keyZ, this->keyX, this->keyC, this->keyV, this->keyB, this->keyN, this->keyM
+		};
+
+		for each (Button ^ key in keys)
 		{
-			key->Click += gcnew EventHandler(this, &MainForm::letterButton_Click);
+			if (!System::String::IsNullOrEmpty(key->Text) && key->Text->Length == 1)
+			{
+				wchar_t letter = key->Text[0];
+				this->letterKeys[letter] = key;
+				key->Click += gcnew EventHandler(this, &MainForm::letterButton_Click);
+			}
 		}
 
 		this->keyEnter->Click += gcnew EventHandler(this, &MainForm::enterButton_Click);
@@ -208,6 +218,41 @@ namespace  TeamDWordle
 			}
 		}
 
+		//Color Used letter Keys 
+		for (int i = 0; i < guess.length(); ++i)
+		{
+			char character = std::toupper(guess[i]);
+			Button^ keyButton = this->letterKeys[character];
+
+			// Only upgrade colors (gray < yellow < green)
+			System::Drawing::Color currentColor = keyButton->BackColor;
+			System::Drawing::Color newColor;
+
+			switch (feedback[i])
+			{
+			case Model::Feedback::Correct:
+				newColor = System::Drawing::Color::Green;
+				break;
+			case Model::Feedback::WrongPosition:
+				if (currentColor != System::Drawing::Color::Green)
+					newColor = System::Drawing::Color::Goldenrod;
+				else
+					continue;
+				break;
+			case Model::Feedback::Incorrect:
+				if (currentColor != System::Drawing::Color::Green &&
+					currentColor != System::Drawing::Color::Goldenrod)
+					newColor = System::Drawing::Color::DimGray;
+				else
+					continue;
+				break;
+			default:
+				continue;
+			}
+
+			keyButton->BackColor = newColor;
+		}
+
 		// Check result and show a message if game ends
 		System::String^ result = gcnew System::String(this->myManager->getResult().c_str());
 
@@ -262,6 +307,11 @@ namespace  TeamDWordle
 				lbl->Text = L"";
 				lbl->BackColor = System::Drawing::Color::White;
 			}
+		}
+
+		for each (Button ^ key in this->letterKeys->Values)
+		{
+			key->BackColor = System::Drawing::Color::White;
 		}
 
 		this->myManager->setRandomWord();
