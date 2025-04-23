@@ -15,6 +15,9 @@ namespace View {
 	public ref class UserProfileForm : public System::Windows::Forms::Form
 	{
 	public:
+		String^ GetUsername();
+		bool GetAllowReuseLetters();
+
 		UserProfileForm(void);
 
 	protected:

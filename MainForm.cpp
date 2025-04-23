@@ -2,6 +2,8 @@
 #include "Model/WordDictionary.h"
 #include "Model/WordleManager.h"
 #include "View/UserProfileForm.h"
+#include <windows.h>
+#include <stdio.h>
 
 using namespace System;
 using namespace System::Windows::Forms;
@@ -12,12 +14,14 @@ int main(array<String^>^ args)
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
 
-	// TODO This currently shows the login dialog first (no actual username tracking yet). Need to implement username tracking and allow reuse of letters.
 	::View::UserProfileForm^ login = gcnew ::View::UserProfileForm();
-	login->ShowDialog();
-	
-	TeamDWordle::MainForm^ game = gcnew TeamDWordle::MainForm();
-	Application::Run(game);
+	if (login->ShowDialog() == DialogResult::OK) {
+		String^ username = login->GetUsername();
+		bool allowReuse = login->GetAllowReuseLetters();
+
+		TeamDWordle::MainForm^ game = gcnew TeamDWordle::MainForm(username, allowReuse);
+		Application::Run(game);
+	}
 
 	return 0;
 }
@@ -27,7 +31,21 @@ namespace  TeamDWordle
 	MainForm::MainForm(void)
 	{
 		InitializeComponent();
+		this->setupUI();
+	}
 
+	MainForm::MainForm(System::String^ username, bool allowReuseLetters)
+	{
+		InitializeComponent();
+		this->username = username;
+		this->allowReuseLetters = allowReuseLetters;
+		this->setupUI();
+		System::Diagnostics::Debug::WriteLine("User: " + this->username);
+		System::Diagnostics::Debug::WriteLine("Reuse Letters: " + this->allowReuseLetters.ToString());
+	}
+
+	void MainForm::setupUI()
+	{
 		this->myDictionary = new Model::WordDictionary();
 		this->myDictionary->Load("./dictionary.txt", 5);
 
@@ -43,7 +61,7 @@ namespace  TeamDWordle
 		});
 
 		for each (Button ^ key in gcnew array<Button^>{
-			this->keyQ, this->keyW,this->keyE, this->keyR, this->keyT, this->keyY, this->keyU, this->keyI, this->keyO, this->keyP,
+			this->keyQ, this->keyW, this->keyE, this->keyR, this->keyT, this->keyY, this->keyU, this->keyI, this->keyO, this->keyP,
 				this->keyA, this->keyS, this->keyD, this->keyF, this->keyG, this->keyH, this->keyJ, this->keyK, this->keyL,
 				this->keyZ, this->keyX, this->keyC, this->keyV, this->keyB, this->keyN, this->keyM })
 		{
@@ -54,7 +72,7 @@ namespace  TeamDWordle
 		this->keyBackspace->Click += gcnew EventHandler(this, &MainForm::deleteButton_Click);
 		this->bttnNewGame->Click += gcnew EventHandler(this, &MainForm::newGameButton_Click);
 		this->bttnExitGame->Click += gcnew EventHandler(this, &MainForm::exitGameButton_Click);
-		this->ActiveControl = this->keyEnter;  
+		this->ActiveControl = this->keyEnter;
 	}
 
 	MainForm::~MainForm()
@@ -110,16 +128,46 @@ namespace  TeamDWordle
 		}
 	}
 
-	void MainForm::enterButton_Click(System::Object^ sender, System::EventArgs^ e)
+	void MainForm::setCurrentRowTiles(int index)
 	{
-		bool incomplete = false;
-		for each (Label ^ lbl in this->currentRowTiles) {
-			if (String::IsNullOrEmpty(lbl->Text)) {
-				incomplete = true;
-				break;
+		auto rows = gcnew array<array<System::Windows::Forms::Label^>^> {
+			gcnew array<System::Windows::Forms::Label^> { this->Guess1Tile1, this->Guess1Tile2, this->Guess1Tile3, this->Guess1Tile4, this->Guess1Tile5 },
+				gcnew array<System::Windows::Forms::Label^> { this->Guess2Tile1, this->Guess2Tile2, this->Guess2Tile3, this->Guess2Tile4, this->Guess2Tile5 },
+				gcnew array<System::Windows::Forms::Label^> { this->Guess3Tile1, this->Guess3Tile2, this->Guess3Tile3, this->Guess3Tile4, this->Guess3Tile5 },
+				gcnew array<System::Windows::Forms::Label^> { this->Guess4Tile1, this->Guess4Tile2, this->Guess4Tile3, this->Guess4Tile4, this->Guess4Tile5 },
+				gcnew array<System::Windows::Forms::Label^> { this->Guess5Tile1, this->Guess5Tile2, this->Guess5Tile3, this->Guess5Tile4, this->Guess5Tile5 },
+				gcnew array<System::Windows::Forms::Label^> { this->Guess6Tile1, this->Guess6Tile2, this->Guess6Tile3, this->Guess6Tile4, this->Guess6Tile5 }
+		};
+
+		if (index >= 0 && index < rows->Length)
+		{
+			this->currentRowTiles->Clear();
+			this->currentRowTiles->AddRange(rows[index]);
+		}
+		else
+		{
+			System::Diagnostics::Debug::WriteLine("setCurrentRowTiles: unexpected index " + index.ToString());
+			this->currentRowTiles->Clear();
+			this->currentRowTiles->AddRange(rows[0]);
+		}
+	}
+
+	bool MainForm::isRowComplete(Generic::List<Label^>^ rowTiles)
+	{
+		for each (Label ^ lbl in rowTiles)
+		{
+			if (String::IsNullOrEmpty(lbl->Text))
+			{
+				return false;
 			}
 		}
-		if (incomplete) {
+		return true;
+	}
+
+	void MainForm::enterButton_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		if (!this->isRowComplete(this->currentRowTiles))
+		{
 			MessageBox::Show(
 				"Please fill all 5 letters before submitting.",
 				"Incomplete guess",
@@ -179,68 +227,7 @@ namespace  TeamDWordle
 		if (this->currentRowIndex < 5)
 		{
 			this->currentRowIndex++;
-			this->currentRowTiles->Clear();
-
-			switch (this->currentRowIndex)
-			{
-			case 0:
-			{
-				auto row1 = gcnew array<System::Windows::Forms::Label^> {
-					this->Guess1Tile1, this->Guess1Tile2, this->Guess1Tile3, this->Guess1Tile4, this->Guess1Tile5
-				};
-				this->currentRowTiles->AddRange(row1);
-				break;
-			}
-			case 1:
-			{
-				auto row2 = gcnew array<System::Windows::Forms::Label^> {
-					this->Guess2Tile1, this->Guess2Tile2, this->Guess2Tile3, this->Guess2Tile4, this->Guess2Tile5
-				};
-				this->currentRowTiles->AddRange(row2);
-				break;
-			}
-			case 2:
-			{
-				auto row3 = gcnew array<System::Windows::Forms::Label^> {
-					this->Guess3Tile1, this->Guess3Tile2, this->Guess3Tile3, this->Guess3Tile4, this->Guess3Tile5
-				};
-				this->currentRowTiles->AddRange(row3);
-				break;
-			}
-			case 3:
-			{
-				auto row4 = gcnew array<System::Windows::Forms::Label^> {
-					this->Guess4Tile1, this->Guess4Tile2, this->Guess4Tile3, this->Guess4Tile4, this->Guess4Tile5
-				};
-				this->currentRowTiles->AddRange(row4);
-				break;
-			}
-			case 4:
-			{
-				auto row5 = gcnew array<System::Windows::Forms::Label^> {
-					this->Guess5Tile1, this->Guess5Tile2, this->Guess5Tile3, this->Guess5Tile4, this->Guess5Tile5
-				};
-				this->currentRowTiles->AddRange(row5);
-				break;
-			}
-			case 5:
-			{
-				auto row6 = gcnew array<System::Windows::Forms::Label^> {
-					this->Guess6Tile1, this->Guess6Tile2, this->Guess6Tile3, this->Guess6Tile4, this->Guess6Tile5
-				};
-				this->currentRowTiles->AddRange(row6);
-				break;
-			}
-			default: 
-				System::Diagnostics::Debug::WriteLine(
-					"enterButton_Click: unexpected row index " + this->currentRowIndex.ToString());
-				auto row1 = gcnew array<Label^>{
-					this->Guess1Tile1, this->Guess1Tile2, this->Guess1Tile3, this->Guess1Tile4, this->Guess1Tile5
-				};
-				this->currentRowTiles->AddRange(row1);
-				this->currentRowIndex = 0;
-				break;
-			}
+			this->setCurrentRowTiles(this->currentRowIndex);
 		}
 	}
 

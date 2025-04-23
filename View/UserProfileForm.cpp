@@ -31,4 +31,12 @@ namespace View
 		this->DialogResult = System::Windows::Forms::DialogResult::OK;
 		this->Close();
 	}
+
+	String^ UserProfileForm::GetUsername() {
+		return this->usernameTextBox->Text;
+	}
+
+	bool UserProfileForm::GetAllowReuseLetters() {
+		return this->checkReuseLetters->Checked;
+	}
 }
