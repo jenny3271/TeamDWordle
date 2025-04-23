@@ -207,13 +207,16 @@ namespace  TeamDWordle
 		for (int i = 0; i < feedback.size(); ++i) {
 			switch (feedback[i]) {
 			case Model::Feedback::Correct:
-				this->currentRowTiles[i]->BackColor = System::Drawing::Color::Green;
+				this->currentRowTiles[i]->BackColor = System::Drawing::ColorTranslator::FromHtml("#6CA965");
+				this->currentRowTiles[i]->ForeColor = System::Drawing::Color::White;
 				break;
 			case Model::Feedback::WrongPosition:
-				this->currentRowTiles[i]->BackColor = System::Drawing::Color::Goldenrod;
+				this->currentRowTiles[i]->BackColor = System::Drawing::ColorTranslator::FromHtml("#C8B653");
+				this->currentRowTiles[i]->ForeColor = System::Drawing::Color::White;
 				break;
 			case Model::Feedback::Incorrect:
-				this->currentRowTiles[i]->BackColor = System::Drawing::Color::DimGray;
+				this->currentRowTiles[i]->BackColor = System::Drawing::ColorTranslator::FromHtml("#787C7F");
+				this->currentRowTiles[i]->ForeColor = System::Drawing::Color::White;
 				break;
 			}
 		}
@@ -231,20 +234,19 @@ namespace  TeamDWordle
 			switch (feedback[i])
 			{
 			case Model::Feedback::Correct:
-				newColor = System::Drawing::Color::Green;
+				newColor = System::Drawing::ColorTranslator::FromHtml("#6CA965");
+				keyButton->ForeColor = System::Drawing::Color::White;
 				break;
 			case Model::Feedback::WrongPosition:
-				if (currentColor != System::Drawing::Color::Green)
-					newColor = System::Drawing::Color::Goldenrod;
-				else
-					continue;
+				if (currentColor != System::Drawing::ColorTranslator::FromHtml("#6CA965"))
+					newColor = System::Drawing::ColorTranslator::FromHtml("#C8B653");
+				keyButton->ForeColor = System::Drawing::Color::White;
 				break;
 			case Model::Feedback::Incorrect:
-				if (currentColor != System::Drawing::Color::Green &&
-					currentColor != System::Drawing::Color::Goldenrod)
-					newColor = System::Drawing::Color::DimGray;
-				else
-					continue;
+				if (currentColor != System::Drawing::ColorTranslator::FromHtml("#6CA965") &&
+					currentColor != System::Drawing::ColorTranslator::FromHtml("#C8B653"))
+					newColor = System::Drawing::ColorTranslator::FromHtml("#787C7F");
+				keyButton->ForeColor = System::Drawing::Color::White;
 				break;
 			default:
 				continue;
