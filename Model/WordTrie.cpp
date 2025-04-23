@@ -9,6 +9,7 @@ namespace Model {
 
     WordTrie::~WordTrie() {
         deleteTrie(root);
+        this->root = nullptr;
     }
 
     void WordTrie::Insert(const std::string& word) {
@@ -24,23 +25,39 @@ namespace Model {
 
     bool WordTrie::Search(const std::string& word) const {
         TrieNode* current = root;
-        for (char ch : word) {
-            if (current->children.find(ch) == current->children.end()) {
+        for (char character : word) {
+            if (current->children.find(character) == current->children.end()) {
                 return false;
             }
-            current = current->children[ch];
+            current = current->children[character];
         }
         return current->isEndOfWord;
     }
 
     void WordTrie::deleteTrie(TrieNode* node) {
-        for (auto& pair : node->children) {
-            deleteTrie(pair.second);
+        if (node == nullptr) {
+            return;
         }
+
+        std::vector<TrieNode*> childNodes;
+        for (const auto& pair : node->children) {
+            childNodes.push_back(pair.second);
+        }
+
+        for (TrieNode* child : childNodes) {
+            deleteTrie(child);
+        }
+
+        node->children.clear(); 
         delete node;
     }
 
     std::string* WordTrie::GetRandomWord() const {
+        if (this->root == nullptr) {
+            std::cerr << "Error: Trie has been deleted or not initialized.\n";
+            return nullptr;
+        }
+
         std::string randomWord;
         TrieNode* current = root;
 

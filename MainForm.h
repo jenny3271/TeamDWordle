@@ -1,5 +1,6 @@
 #pragma once
 #include "Model/WordDictionary.h"
+#include "Model/WordleManager.h"
 
 namespace TeamDWordle {
 
@@ -1172,6 +1173,7 @@ namespace TeamDWordle {
 #pragma endregion
 		System::Collections::Generic::List<System::Windows::Forms::Label^>^ currentRowTiles;
 		Model::WordDictionary* myDictionary;
+		Model::WordleManager* myManager;
 		int currentRowIndex;
 		System::String^ currentUser;
 		bool allowReuseLetters;

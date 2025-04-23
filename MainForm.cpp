@@ -9,39 +9,6 @@ using namespace System::Windows::Forms;
 [STAThread]
 int main(array<String^>^ args)
 {
-	// Initialize the WordDictionary and load the dictionary file FOR TESTING
-    Model::WordDictionary dict;
-	System::Diagnostics::Debug::WriteLine("loaded file: " + dict.Load("./dictionary.txt", 5));//TRUE
-	System::Diagnostics::Debug::WriteLine("dictionary contains apple: " + dict.Contains("apple"));//TRUE
-	System::Diagnostics::Debug::WriteLine("dictionary contains appl: " + dict.Contains("appl"));//FALSE
-	System::Diagnostics::Debug::WriteLine("dictionary contains sense: " + dict.Contains("sense"));//TRUE
-
-    std::string* randomWord = dict.GetRandomWord();  
-    System::Diagnostics::Debug::WriteLine("dictionary random word: " + gcnew System::String(randomWord->c_str()));
-
-    //Model::WordleManager wordleManager;
-    // wordleManager.setRandomWord();//rando
-    // Model::WordleManager game;
-    // std::vector<std::string> testGuesses = {
-    //     "alert", "apply", "apple", "rando"
-    // };
-
-    // for (const std::string& guess : testGuesses) {
-    //     System::Diagnostics::Debug::WriteLine("Guessing: ");
-    //     game.Guess(guess);
-
-    //     auto feedback = game.getLastFeedback();
-    //     System::Diagnostics::Debug::WriteLine("Feedback: ");
-    //     for (auto f : feedback) {
-    //         switch (f) {
-    //         case Model::Feedback::Correct: System::Diagnostics::Debug::WriteLine( "[C] "); break;
-    //         case Model::Feedback::WrongPosition: System::Diagnostics::Debug::WriteLine("[I] "); break;
-    //         case Model::Feedback::Incorrect: System::Diagnostics::Debug::WriteLine("[X] "); break;
-    //         }
-    //     }
-    // }
-
-
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
 
@@ -52,7 +19,6 @@ int main(array<String^>^ args)
 	TeamDWordle::MainForm^ game = gcnew TeamDWordle::MainForm();
 	Application::Run(game);
 
-	delete randomWord;
 	return 0;
 }
 
@@ -64,6 +30,8 @@ namespace  TeamDWordle
 
 		this->myDictionary = new Model::WordDictionary();
 		this->myDictionary->Load("./dictionary.txt", 5);
+
+		this->myManager = new Model::WordleManager(myDictionary);
 
 		this->KeyPreview = true;
 		this->KeyDown += gcnew KeyEventHandler(this, &MainForm::mainForm_KeyDown);
@@ -92,6 +60,7 @@ namespace  TeamDWordle
 	MainForm::~MainForm()
 	{
 		delete myDictionary;
+		delete myManager;
 		if (components)
 		{
 			delete components;
@@ -174,7 +143,38 @@ namespace  TeamDWordle
 			return;
 		}
 
-		// TODO: score & color the tiles in currentRowTiles
+		// Score & color the tiles using WordleManager
+		std::vector<Model::Feedback> feedback = this->myManager->Guess(guess);
+
+		for (int i = 0; i < feedback.size(); ++i) {
+			switch (feedback[i]) {
+			case Model::Feedback::Correct:
+				this->currentRowTiles[i]->BackColor = System::Drawing::Color::Green;
+				break;
+			case Model::Feedback::WrongPosition:
+				this->currentRowTiles[i]->BackColor = System::Drawing::Color::Goldenrod;
+				break;
+			case Model::Feedback::Incorrect:
+				this->currentRowTiles[i]->BackColor = System::Drawing::Color::DimGray;
+				break;
+			}
+		}
+
+		// Check result and show a message if game ends
+		System::String^ result = gcnew System::String(this->myManager->getResult().c_str());
+
+		if (result == "Correct!") {
+			MessageBox::Show("Congratulations! You guessed the word!", "You Win");
+			this->keyEnter->Enabled = false;
+			this->keyBackspace->Enabled = false;
+			return;
+		}
+		else if (result->StartsWith("Game Over")) {
+			MessageBox::Show(result, "Game Over");
+			this->keyEnter->Enabled = false;
+			this->keyBackspace->Enabled = false;
+			return;
+		}
 
 		if (this->currentRowIndex < 5)
 		{
@@ -277,11 +277,13 @@ namespace  TeamDWordle
 			}
 		}
 
-		// TODO: reset the game state in WordleManager and set a new random word
+		this->myManager->setRandomWord();
 
 		MessageBox::Show("New game started!", "Reset", MessageBoxButtons::OK, MessageBoxIcon::Information);
 
 		this->ActiveControl = this->keyEnter;
+		this->keyEnter->Enabled = true;
+		this->keyBackspace->Enabled = true;
 	}
 
 	void MainForm::exitGameButton_Click(System::Object^ sender, System::EventArgs^ e)

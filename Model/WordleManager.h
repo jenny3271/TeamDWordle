@@ -26,7 +26,7 @@ namespace Model {
 		/// <summary>
 		///     The word dictionary
 		/// </summary>
-		WordDictionary wordDict;		
+		WordDictionary* wordDict;		
 		/// <summary>
 		///     The answer
 		/// </summary>
@@ -53,7 +53,7 @@ namespace Model {
 		/// <summary>
 		///     Initializes a new instance of the <see cref="WordleManager"/> class.
 		/// </summary>
-		WordleManager();
+		WordleManager(WordDictionary* dictionary);
 		/// <summary>
 		///     Finalizes an instance of the <see cref="WordleManager"/> class.
 		/// </summary>
@@ -77,7 +77,12 @@ namespace Model {
 		///     Gets the last feedback.
 		/// </summary>
 		/// <returns>the feedback for the last guess</returns>
-		std::vector<Feedback> getLastFeedback() const;
+		std::vector<Feedback> getLastFeedback() const;		
+		/// <summary>
+		///     Gets the result.
+		/// </summary>
+		/// <returns>the result</returns>
+		std::string getResult() const;
 	};
 };
 

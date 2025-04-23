@@ -2,15 +2,21 @@
 #include <ctime>
 #include <cstdlib>
 #include <algorithm>
+#include <stdexcept>
 using namespace Model;
 
 namespace Model {
 
-	WordleManager::WordleManager() {
-		this->wordDict = WordDictionary();
-		srand(static_cast<unsigned>(time(nullptr)));
+	WordleManager::WordleManager(WordDictionary* dictionary) {
+		if (dictionary == nullptr) {
+			throw std::invalid_argument("WordDictionary cannot be null.");
+		}
+	    else {
+			this->wordDict = dictionary;
+		}
+		this->guesses = std::vector<std::string>();
+		this->lastFeedback = std::vector<Feedback>();
 		this->setRandomWord();
-		this->result = "";
 	}
 
 	WordleManager::~WordleManager() {
@@ -43,11 +49,14 @@ namespace Model {
 	}
 
 	void Model::WordleManager::setRandomWord() {
+        std::string* randomWord = this->wordDict->GetRandomWord();
+		if (randomWord == nullptr) {
+			this->answer = "error";
+		}
+		else {
+			this->answer = toLowerCase(*randomWord);
+		}
 
-        this->answer = *(this->wordDict.GetRandomWord());
-		
-		this->answer = toLowerCase(this->answer);
-		
 		this->guesses.clear();
 		this->result = "";
 		this->lastFeedback.clear();
@@ -65,7 +74,7 @@ namespace Model {
 			this->result = "Internal error: answer length mismatch.";
 			return this->lastFeedback;
 		}
-		if (!wordDict.Contains(guess)) {
+		if (!wordDict->Contains(guess)) {
 			this->result = "Invalid word.";
 			return this->lastFeedback;
 		}
@@ -103,6 +112,10 @@ namespace Model {
 
 	std::vector<Feedback> WordleManager::getLastFeedback() const {
 		return this->lastFeedback;
+	}
+
+	std::string WordleManager::getResult() const {
+		return this->result;
 	}
 
 

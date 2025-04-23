@@ -10,6 +10,7 @@ namespace Model {
 	WordDictionary::~WordDictionary()
 	{
 		delete trie;
+		trie = nullptr;
 	}
 
 	bool WordDictionary::Load(const std::string& filename, int wordSize) {
@@ -36,6 +37,9 @@ namespace Model {
 	}
 
 	std::string* WordDictionary::GetRandomWord() const {
+		if (trie == nullptr) {
+			return nullptr;
+		}
 		return trie->GetRandomWord();
 	}
 
