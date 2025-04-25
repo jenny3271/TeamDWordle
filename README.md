@@ -4,6 +4,10 @@ By: Jennifer Alvarez and Kate Anglin
 # Provide a short summary of the project.
 
 # Describe how to turn on/of the conditional compilation for displaying the guess word to the console.
+To turn on/off the display of the current answer (guess word) in the console for debugging:
+1. Open the WordleManager.h file
+2. Uncomment or add the following line before any #include or code using it:
+        #define SHOW_ANSWER
 
 # Describe what data structure you used to store the dictionary and why you chose that particular data structure.
 We chose to use the Trie structure. A trie (prefix tree) is a specialized tree used to store strings, particularly useful when dealing with a large set of words like those in a dictionary. 
