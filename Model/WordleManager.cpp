@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <stdexcept>
+#include <set>
 using namespace Model;
 
 namespace Model {
@@ -49,17 +50,33 @@ namespace Model {
 		return feedback;
 	}
 
+	bool wordHasUniqueLetters(std::string* word) {
+	    std::set<char> uniqueLetters;
+	    for (char c : *word) {
+		    if (uniqueLetters.find(c) != uniqueLetters.end()) {
+			    return false; 
+		    }
+		    uniqueLetters.insert(c);
+	    }
+	    return true; 
+    }
+
 	void Model::WordleManager::setRandomWord() {
         std::string* randomWord = this->wordDict->GetRandomWord();
 		if (randomWord == nullptr) {
 			throw std::runtime_error("Failed to get a random word from the dictionary.");
 		}
 
-		while (!this->allowReusedLetters && std::unique(randomWord->begin(), randomWord->end()) != randomWord->end()) {
-			randomWord = this->wordDict->GetRandomWord();
+		if (!this->allowReusedLetters) {
+			while (!wordHasUniqueLetters(randomWord)) {
+				randomWord = this->wordDict->GetRandomWord();
+			}
 		}
 
 		this->answer = toLowerCase(*randomWord);
+        #ifdef SHOW_ANSWER
+		    std::cout << "Answer: " << *randomWord << std::endl;
+        #endif
 
 		this->guesses.clear();
 		this->result = "";

@@ -54,7 +54,6 @@ namespace Model {
 
     std::string* WordTrie::GetRandomWord() const {
         if (this->root == nullptr) {
-            std::cerr << "Error: Trie has been deleted or not initialized.\n";
             return nullptr;
         }
 
@@ -80,7 +79,6 @@ namespace Model {
             current = it->second;
 
             if (current->isEndOfWord) {
-                std::cout << "Random word found: " << randomWord << std::endl;
                 return new std::string(randomWord);
             }
         }

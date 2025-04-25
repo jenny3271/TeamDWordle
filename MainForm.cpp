@@ -3,14 +3,26 @@
 #include "Model/WordleManager.h"
 #include "View/UserProfileForm.h"
 #include <windows.h>
+#include <iostream>
 #include <stdio.h>
 
 using namespace System;
 using namespace System::Windows::Forms;
 
+void InitConsole()
+{
+	AllocConsole();
+	freopen("CONOUT$", "w", stdout);
+	freopen("CONOUT$", "w", stderr);
+}
+
 [STAThread]
 int main(array<String^>^ args)
 {
+    #ifdef SHOW_ANSWER
+	    InitConsole();
+    #endif
+
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
 
@@ -93,6 +105,7 @@ namespace  TeamDWordle
 		{
 			delete components;
 		}
+		FreeConsole();
 	}
 
 	void MainForm::letterButton_Click(Object^ sender, EventArgs^ e)

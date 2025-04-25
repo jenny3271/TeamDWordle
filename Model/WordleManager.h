@@ -1,7 +1,9 @@
 #pragma once
+#define SHOW_ANSWER true
 #define WORD_SIZE 5
 #define NUMBER_OF_GUESSES 6
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include "WordDictionary.h"
