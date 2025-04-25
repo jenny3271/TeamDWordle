@@ -49,7 +49,7 @@ namespace  TeamDWordle
 		this->myDictionary = new Model::WordDictionary();
 		this->myDictionary->Load("./dictionary.txt", 5);
 
-		this->myManager = new Model::WordleManager(myDictionary);
+		this->myManager = new Model::WordleManager(myDictionary, this->allowReuseLetters);
 
 		this->KeyPreview = true;
 		this->KeyDown += gcnew KeyEventHandler(this, &MainForm::mainForm_KeyDown);

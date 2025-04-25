@@ -42,24 +42,30 @@ namespace Model {
 		/// <summary>
 		///     The last feedback
 		/// </summary>
-		std::vector<Feedback> lastFeedback;
+		std::vector<Feedback> lastFeedback;		
+		/// <summary>
+		///     The allow reused letters. If true, the answer may contain reused letters.
+		/// </summary>
+		bool allowReusedLetters;
 		/// <summary>
 		///     To the lower case.
 		/// </summary>
 		/// <param name="str">The string.</param>
 		/// <returns>string lowercase</returns>
 		std::string toLowerCase(const std::string& str);
-	public:
+	public:		
 		/// <summary>
 		///     Initializes a new instance of the <see cref="WordleManager"/> class.
 		/// </summary>
-		WordleManager(WordDictionary* dictionary);
+		/// <param name="dictionary">The dictionary.</param>
+		/// <param name="allowReusedLetters">if set to <c>true</c> [allow reused letters].</param>
+		WordleManager(WordDictionary* dictionary, bool allowReusedLetters);
 		/// <summary>
 		///     Finalizes an instance of the <see cref="WordleManager"/> class.
 		/// </summary>
 		virtual ~WordleManager();
 		/// <summary>
-		///     Sets the random word.
+		///     Sets the random word. If the answer cannot contain reused letters, the word is selected from the dictionary must have unique characters.
 		/// </summary>
 		void setRandomWord();		
 		/// <summary>

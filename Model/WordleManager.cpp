@@ -7,13 +7,14 @@ using namespace Model;
 
 namespace Model {
 
-	WordleManager::WordleManager(WordDictionary* dictionary) {
+	WordleManager::WordleManager(WordDictionary* dictionary, bool allowReusedLetters) {
 		if (dictionary == nullptr) {
 			throw std::invalid_argument("WordDictionary cannot be null.");
 		}
 	    else {
 			this->wordDict = dictionary;
 		}
+		this->allowReusedLetters = allowReusedLetters;
 		this->guesses = std::vector<std::string>();
 		this->lastFeedback = std::vector<Feedback>();
 		this->setRandomWord();
@@ -51,11 +52,14 @@ namespace Model {
 	void Model::WordleManager::setRandomWord() {
         std::string* randomWord = this->wordDict->GetRandomWord();
 		if (randomWord == nullptr) {
-			this->answer = "error";
+			throw std::runtime_error("Failed to get a random word from the dictionary.");
 		}
-		else {
-			this->answer = toLowerCase(*randomWord);
+
+		while (!this->allowReusedLetters && std::unique(randomWord->begin(), randomWord->end()) != randomWord->end()) {
+			randomWord = this->wordDict->GetRandomWord();
 		}
+
+		this->answer = toLowerCase(*randomWord);
 
 		this->guesses.clear();
 		this->result = "";
