@@ -221,39 +221,7 @@ namespace  TeamDWordle
 			}
 		}
 
-		//Color Used letter Keys 
-		for (int i = 0; i < guess.length(); ++i)
-		{
-			char character = std::toupper(guess[i]);
-			Button^ keyButton = this->letterKeys[character];
-
-			// Only upgrade colors (gray < yellow < green)
-			System::Drawing::Color currentColor = keyButton->BackColor;
-			System::Drawing::Color newColor;
-
-			switch (feedback[i])
-			{
-			case Model::Feedback::Correct:
-				newColor = System::Drawing::ColorTranslator::FromHtml("#6CA965");
-				keyButton->ForeColor = System::Drawing::Color::White;
-				break;
-			case Model::Feedback::WrongPosition:
-				if (currentColor != System::Drawing::ColorTranslator::FromHtml("#6CA965"))
-					newColor = System::Drawing::ColorTranslator::FromHtml("#C8B653");
-					keyButton->ForeColor = System::Drawing::Color::White;
-				break;
-			case Model::Feedback::Incorrect:
-				if (currentColor != System::Drawing::ColorTranslator::FromHtml("#6CA965") &&
-					currentColor != System::Drawing::ColorTranslator::FromHtml("#C8B653"))
-					newColor = System::Drawing::ColorTranslator::FromHtml("#787C7F");
-					keyButton->ForeColor = System::Drawing::Color::White;
-				break;
-			default:
-				continue;
-			}
-
-			keyButton->BackColor = newColor;
-		}
+		ColorUsedLetterKeys(guess, feedback);
 
 		// Check result and show a message if game ends
 		System::String^ result = gcnew System::String(this->myManager->getResult().c_str());
@@ -275,6 +243,49 @@ namespace  TeamDWordle
 		{
 			this->currentRowIndex++;
 			this->setCurrentRowTiles(this->currentRowIndex);
+		}
+	}
+
+	int getColorRank(System::Drawing::Color color) {
+		if (color == System::Drawing::ColorTranslator::FromHtml("#6CA965")) return 3;
+		if (color == System::Drawing::ColorTranslator::FromHtml("#C8B653")) return 2;
+		if (color == System::Drawing::ColorTranslator::FromHtml("#787C7F")) return 1;
+		return 0;
+	}
+
+	void MainForm::ColorUsedLetterKeys(std::string& guess, std::vector<Model::Feedback>& feedback)
+	{
+		for (int i = 0; i < guess.length(); ++i)
+		{
+			char character = std::toupper(guess[i]);
+			Button^ keyButton = this->letterKeys[character];
+
+			System::Drawing::Color currentColor = keyButton->BackColor;
+			System::Drawing::Color newColor = currentColor;
+
+			switch (feedback[i])
+			{
+			case Model::Feedback::Correct:
+				newColor = System::Drawing::ColorTranslator::FromHtml("#6CA965");
+				break;
+			case Model::Feedback::WrongPosition:
+				if (getColorRank(currentColor) < 2) {
+					newColor = System::Drawing::ColorTranslator::FromHtml("#C8B653");
+				}
+				break;
+			case Model::Feedback::Incorrect:
+				if (getColorRank(currentColor) < 1) {
+					newColor = System::Drawing::ColorTranslator::FromHtml("#787C7F");
+				}
+				break;
+			default:
+				continue;
+			}
+
+			if (newColor != currentColor) {
+				keyButton->BackColor = newColor;
+				keyButton->ForeColor = System::Drawing::Color::White;
+			}
 		}
 	}
 
