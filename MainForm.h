@@ -1,4 +1,5 @@
 #pragma once
+#include "Model/UserProfile.h"
 #include "Model/WordDictionary.h"
 #include "Model/WordleManager.h"
 
@@ -19,7 +20,9 @@ namespace TeamDWordle {
 	public:
 		MainForm(void);
 
-		MainForm(System::String^ username, bool allowReuseLetters);
+		MainForm(Model::UserProfile* userProfile, bool allowReuseLetters);
+
+		void startNewGame();
 
 	protected:
 		/// <summary>
@@ -99,7 +102,7 @@ namespace TeamDWordle {
 	protected:
 
 	private:
-		System::String^ username;
+		Model::UserProfile* userProfile;
 		bool allowReuseLetters;
 
 		/// <summary>
@@ -1178,6 +1181,7 @@ namespace TeamDWordle {
 		int currentRowIndex;
 		static bool isRowComplete(Generic::List<Label^>^ rowTiles);
 
+		void EndGame(bool gameWon, int guessCount);
 		void setupUI();
 		void setCurrentRowTiles(int index);
 
