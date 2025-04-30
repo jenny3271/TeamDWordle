@@ -25,6 +25,11 @@ namespace Model
 		/// </summary>
 		/// <param name="username">The username for this profile.</param>
 		UserProfile(const std::string& username);
+		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UserProfile"/> class.
+		/// </summary>
+		UserProfile();
 
 		/// <summary>
 		/// Gets the username associated with this profile.

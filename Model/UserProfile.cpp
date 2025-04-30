@@ -16,6 +16,16 @@ namespace Model
 		this->lastCorrectGuessIndex = -1; 
 	}
 
+	UserProfile::UserProfile()
+	{
+		this->totalGamesPlayed = 0;
+		this->wins = 0;
+		this->currentWinStreak = 0;
+		this->maxWinStreak = 0;
+		this->guessDistribution.fill(0);
+		this->lastCorrectGuessIndex = -1;
+	}
+
 	std::string UserProfile::GetUsername() const {
 		return this->username;
 	}

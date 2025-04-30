@@ -1,6 +1,7 @@
 #include "MainForm.h"
 #include "Model/WordDictionary.h"
 #include "Model/WordleManager.h"
+#include "Model/UserProfilesManager.h"
 #include "View/UserProfileForm.h"
 #include <windows.h>
 #include <iostream>
@@ -32,12 +33,33 @@ int main(array<String^>^ args)
 
 	::View::UserProfileForm^ login = gcnew ::View::UserProfileForm();
 	if (login->ShowDialog() == DialogResult::OK) {
-		String^ username = login->GetUsername();
+		String^ usernameManaged = login->GetUsername();
 		bool allowReuse = login->GetAllowReuseLetters();
+		std::string username = msclr::interop::marshal_as<std::string>(usernameManaged);
 
-		Model::UserProfile* userProfile = new Model::UserProfile(msclr::interop::marshal_as<std::string>(username));
+		// Load profiles
+		Model::UserProfilesManager profileManager("UserProfiles.txt");
+
+		Model::UserProfile* userProfile = nullptr;
+		if (profileManager.HasUser(username)) {
+			// Get existing profile
+			userProfile = new Model::UserProfile(profileManager.GetUser(username));
+		}
+		else {
+			// Create new profile
+			userProfile = new Model::UserProfile(username);
+			profileManager.AddUser(*userProfile);
+		}
+
+		// Launch main game
 		TeamDWordle::MainForm^ game = gcnew TeamDWordle::MainForm(userProfile, allowReuse);
 		Application::Run(game);
+
+		// Save updated user profile back to the manager
+		profileManager.AddUser(*userProfile); // Replaces or adds updated profile
+		profileManager.SaveProfiles();
+
+		delete userProfile;
 	}
 
 	return 0;
