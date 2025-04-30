@@ -1,5 +1,5 @@
 #pragma once
-#define SHOW_ANSWER true
+#define SHOW_ANSWER
 #define WORD_SIZE 5
 #define NUMBER_OF_GUESSES 6
 
