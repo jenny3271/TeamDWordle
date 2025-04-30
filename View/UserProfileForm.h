@@ -30,6 +30,7 @@ namespace View {
 	private: System::Windows::Forms::TextBox^ usernameTextBox;
 	private: System::Windows::Forms::CheckBox^ checkReuseLetters;
 	private: System::Windows::Forms::Button^ startGamebttn;
+
 	protected:
 
 	protected:

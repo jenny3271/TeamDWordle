@@ -5,6 +5,10 @@
 #include <windows.h>
 #include <iostream>
 #include <stdio.h>
+#include <msclr/marshal_cppstd.h>
+
+#include "Model/UserProfile.h"
+#include "View/StatisticsForm.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
@@ -31,7 +35,8 @@ int main(array<String^>^ args)
 		String^ username = login->GetUsername();
 		bool allowReuse = login->GetAllowReuseLetters();
 
-		TeamDWordle::MainForm^ game = gcnew TeamDWordle::MainForm(username, allowReuse);
+		Model::UserProfile* userProfile = new Model::UserProfile(msclr::interop::marshal_as<std::string>(username));
+		TeamDWordle::MainForm^ game = gcnew TeamDWordle::MainForm(userProfile, allowReuse);
 		Application::Run(game);
 	}
 
@@ -46,14 +51,12 @@ namespace  TeamDWordle
 		this->setupUI();
 	}
 
-	MainForm::MainForm(System::String^ username, bool allowReuseLetters)
+	MainForm::MainForm(Model::UserProfile* userProfile, bool allowReuseLetters)
 	{
 		InitializeComponent();
-		this->username = username;
+		this->userProfile = userProfile;
 		this->allowReuseLetters = allowReuseLetters;
 		this->setupUI();
-		System::Diagnostics::Debug::WriteLine("User: " + this->username);
-		System::Diagnostics::Debug::WriteLine("Reuse Letters: " + this->allowReuseLetters.ToString());
 	}
 
 	void MainForm::setupUI()
@@ -187,6 +190,29 @@ namespace  TeamDWordle
 		return true;
 	}
 
+	void MainForm::EndGame(bool gameWon, int guessCount)
+	{
+
+		this->userProfile->UpdateStats(gameWon, guessCount);
+
+		System::String^ message = "Game Over!\n";
+		message += "Username: " + gcnew System::String(this->userProfile->GetUsername().c_str()) + "\n";
+		message += "Total Games Played: " + this->userProfile->GetTotalGamesPlayed() + "\n";
+		message += "Wins: " + this->userProfile->GetWins() + "\n";
+		message += "Win Percentage: " + this->userProfile->GetWinPercentage() + "%\n";
+		MessageBox::Show(message, "Game Stats");
+
+		::View::StatisticsForm^ statsForm = gcnew ::View::StatisticsForm(this->userProfile);
+		System::Windows::Forms::DialogResult result = statsForm->ShowDialog(this);
+		if (result == System::Windows::Forms::DialogResult::OK) {
+			this->startNewGame();
+		}
+		else {
+			Application::Exit();
+		}
+	}
+
+
 	void MainForm::enterButton_Click(System::Object^ sender, System::EventArgs^ e)
 	{
 		if (!this->isRowComplete(this->currentRowTiles))
@@ -206,7 +232,6 @@ namespace  TeamDWordle
 			char ch = static_cast<char>(lbl->Text[0]);
 			guess.push_back(static_cast<char>(std::tolower(ch)));
 		}
-
 
 		if (!this->myDictionary->Contains(guess))
 		{
@@ -243,12 +268,14 @@ namespace  TeamDWordle
 			MessageBox::Show("Congratulations! You guessed the word!", "You Win");
 			this->keyEnter->Enabled = false;
 			this->keyBackspace->Enabled = false;
+			this->EndGame(true, this->currentRowIndex + 1);
 			return;
 		}
 		else if (result->StartsWith("Game Over")) {
 			MessageBox::Show(result, "Game Over");
 			this->keyEnter->Enabled = false;
 			this->keyBackspace->Enabled = false;
+			this->EndGame(false, this->currentRowIndex + 1);
 			return;
 		}
 
@@ -314,7 +341,7 @@ namespace  TeamDWordle
 		}
 	}
 
-	void MainForm::newGameButton_Click(System::Object^ sender, System::EventArgs^ e)
+	void MainForm::startNewGame()
 	{
 		this->currentRowIndex = 0;
 		this->currentRowTiles->Clear();
@@ -349,6 +376,11 @@ namespace  TeamDWordle
 		this->ActiveControl = this->keyEnter;
 		this->keyEnter->Enabled = true;
 		this->keyBackspace->Enabled = true;
+	}
+
+	void MainForm::newGameButton_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		this->startNewGame();
 	}
 
 	void MainForm::exitGameButton_Click(System::Object^ sender, System::EventArgs^ e)
