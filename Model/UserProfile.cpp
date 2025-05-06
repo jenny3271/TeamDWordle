@@ -1,5 +1,4 @@
 #include "UserProfile.h"
-
 #include <iostream>
 #include <sstream>
 
@@ -84,7 +83,7 @@ namespace Model
 		return this->totalGuessesMade;
 	}
 
-	void UserProfile::UpdateStats(bool gameWon, int guessCount, const std::string& correctWord, const std::vector<std::string>& guesses, int totalGuessesMade) {
+	void UserProfile::UpdateStats(bool gameWon, int guessCount) {
 		this->totalGamesPlayed++;
 
 		if (gameWon) {
@@ -111,7 +110,9 @@ namespace Model
 			this->currentWinStreak = 0;
 			this->lastCorrectGuessIndex = -1;
 		}
+	}
 
+	void UserProfile::UpdateLoadedGame(const std::string& correctWord, const std::vector<std::string>& guesses, int totalGuessesMade) {
 		this->correctWord = correctWord;
 		this->guesses = guesses;
 		this->totalGuessesMade = totalGuessesMade;

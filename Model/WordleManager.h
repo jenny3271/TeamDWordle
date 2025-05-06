@@ -54,7 +54,24 @@ namespace Model {
 		/// </summary>
 		/// <param name="str">The string.</param>
 		/// <returns>string lowercase</returns>
-		std::string toLowerCase(const std::string& str);
+		std::string toLowerCase(const std::string& str);			
+		/// <summary>
+		///     Validates the guess.
+		/// </summary>
+		/// <param name="guess">The guess.</param>
+		/// <returns>true if valid; false otherwise</returns>
+		bool validateGuess(const std::string& guess);		
+		/// <summary>
+		///     Gets the feedback string.
+		/// </summary>
+		/// <param name="feedback">The feedback.</param>
+		/// <returns> the feedback as a string</returns>
+		std::string getFeedbackString(const std::vector<Model::Feedback>& feedback);		
+		/// <summary>
+		///     Updates the result.
+		/// </summary>
+		/// <param name="guess">The guess.</param>
+		void updateResult(const std::string& guess);
 	public:		
 		/// <summary>
 		///     Initializes a new instance of the <see cref="WordleManager"/> class.
@@ -111,6 +128,20 @@ namespace Model {
 		/// </summary>
 		/// <returns>The number of guesses made.</returns>
 		int GetCurrentGuessIndex() const;
+		/// <summary>
+		///     Finds the correct letters correct placement.
+		/// </summary>
+		/// <param name="feedback">The feedback.</param>
+		/// <param name="tempAnswer">The temporary answer.</param>
+		/// <param name="guess">The guess.</param>
+		static void FindCorrectLettersCorrectPlacement(std::vector<Model::Feedback>& feedback, std::string& tempAnswer, const std::string& guess);
+		/// <summary>
+		///     Finds the correct letters incorrect placement.
+		/// </summary>
+		/// <param name="feedback">The feedback.</param>
+		/// <param name="tempAnswer">The temporary answer.</param>
+		/// <param name="guess">The guess.</param>
+		static void FindCorrectLettersIncorrectPlacement(std::vector<Model::Feedback>& feedback, std::string& tempAnswer, const std::string& guess);
 	};
 };
 

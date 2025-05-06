@@ -1192,6 +1192,8 @@ namespace TeamDWordle {
 		void processLetterInput(wchar_t letter);
 		void mainForm_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e);
 		void enterButton_Click(System::Object^ sender, System::EventArgs^ e);
+		void CheckResultAndShowMessage(System::String^ result, bool& retFlag);
+		void ScoreAndColorWordTiles(std::vector<Model::Feedback>& feedback);
 		void ColorUsedLetterKeys(std::string& guess, std::vector<Model::Feedback>& feedback);
 		void deleteButton_Click(System::Object^ sender, System::EventArgs^ e);
 

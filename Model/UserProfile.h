@@ -111,14 +111,19 @@ namespace Model
 		int GetTotalGuessesMade() const;
 
 		/// <summary>
-		/// Updates the statistics for a completed game.
+		///     Updates the statistics for a completed game.
 		/// </summary>
 		/// <param name="gameWon">if set to <c>true</c> [game won].</param>
 		/// <param name="guessCount">The guess count.</param>
+		void UpdateStats(bool gameWon, int guessCount);
+		
+		/// <summary>
+		///     Updates the loaded game.
+		/// </summary>
 		/// <param name="correctWord">The correct word.</param>
 		/// <param name="guesses">The guesses.</param>
 		/// <param name="totalGuessesMade">The total guesses made.</param>
-		void UpdateStats(bool gameWon, int guessCount, const std::string& correctWord, const std::vector<std::string>& guesses, int totalGuessesMade);
+		void UpdateLoadedGame(const std::string& correctWord, const std::vector<std::string>& guesses, int totalGuessesMade);
 
 		/// <summary>
 		/// Serializes the user profile to a string for file saving.

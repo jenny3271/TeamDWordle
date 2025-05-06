@@ -18,7 +18,12 @@ namespace Model {
 		this->allowReusedLetters = allowReusedLetters;
 		this->guesses = std::vector<std::string>();
 		this->lastFeedback = std::vector<Feedback>();
-		this->setRandomWord();
+		try {
+            this->setRandomWord();
+            } catch (const std::exception& ex) {
+            std::cout << "An exception occurred: " << ex.what() << std::endl;
+            }
+		
 	}
 
 	WordleManager::~WordleManager() {
@@ -28,15 +33,14 @@ namespace Model {
 		std::vector<Model::Feedback> feedback(WORD_SIZE, Model::Feedback::Incorrect);
 		std::string tempAnswer = answer;
 
-		// First pass: correct letters in correct position
-		for (int i = 0; i < WORD_SIZE; ++i) {
-			if (guess[i] == tempAnswer[i]) {
-				feedback[i] = Model::Feedback::Correct;
-				tempAnswer[i] = '*'; // mark as used
-			}
-		}
+		Model::WordleManager::FindCorrectLettersCorrectPlacement(feedback, tempAnswer, guess);
+		Model::WordleManager::FindCorrectLettersIncorrectPlacement(feedback, tempAnswer, guess);
 
-		// Second pass: correct letters in wrong position
+		return feedback;
+	}
+
+	void Model::WordleManager::FindCorrectLettersIncorrectPlacement(std::vector<Model::Feedback>& feedback, std::string& tempAnswer, const std::string& guess)
+	{
 		for (int i = 0; i < WORD_SIZE; ++i) {
 			if (feedback[i] != Model::Feedback::Correct) {
 				auto pos = tempAnswer.find(guess[i]);
@@ -46,8 +50,16 @@ namespace Model {
 				}
 			}
 		}
+	}
 
-		return feedback;
+	void Model::WordleManager::FindCorrectLettersCorrectPlacement(std::vector<Model::Feedback>& feedback, std::string& tempAnswer, const std::string& guess)
+	{
+		for (int i = 0; i < WORD_SIZE; ++i) {
+			if (guess[i] == tempAnswer[i]) {
+				feedback[i] = Model::Feedback::Correct;
+				tempAnswer[i] = '*';
+			}
+		}
 	}
 
 	bool wordHasUniqueLetters(std::string* word) {
@@ -84,6 +96,9 @@ namespace Model {
 	}
 
 	void Model::WordleManager::setRandomWord(std::string word) {
+		if (word.empty()) {
+			throw std::invalid_argument("No word saved.");
+		}
 		if (word.length() != WORD_SIZE) {
 			throw std::invalid_argument("Word length must be " + std::to_string(WORD_SIZE) + " characters.");
 		}
@@ -96,48 +111,61 @@ namespace Model {
 		this->lastFeedback.clear();
 	}
 
-	std::vector<Model::Feedback> Model::WordleManager::Guess(std::string guess) {
-		this->lastFeedback.clear();
-		guess = toLowerCase(guess);
+    std::vector<Model::Feedback> Model::WordleManager::Guess(std::string guess) {
+        this->lastFeedback.clear();
+        guess = toLowerCase(guess);
 
-		if (guess.length() != WORD_SIZE) {
-			this->result = "Invalid guess length.";
-			return this->lastFeedback;
-		}
-		if (this->answer.length() != WORD_SIZE) {
-			this->result = "Internal error: answer length mismatch.";
-			return this->lastFeedback;
-		}
-		if (!wordDict->Contains(guess)) {
-			this->result = "Invalid word.";
-			return this->lastFeedback;
-		}
+        if (!validateGuess(guess)) {
+            return this->lastFeedback;
+        }
 
-		this->lastFeedback = getFeedback(guess, this->answer);
+        this->lastFeedback = getFeedback(guess, this->answer);
+        std::string feedbackStr = getFeedbackString(this->lastFeedback);
+        this->guesses.push_back(guess + " -> " + feedbackStr);
+        updateResult(guess);
 
-		std::string feedbackStr;
-		for (auto f : this->lastFeedback) {
-			switch (f) {
-			case Feedback::Correct: feedbackStr += "Correct "; break;
-			case Feedback::WrongPosition: feedbackStr += "Wrong Placement "; break;
-			case Feedback::Incorrect: feedbackStr += "Incorrect "; break;
-			}
-		}
+        return this->lastFeedback;
+    }
 
-		this->guesses.push_back(guess + " -> " + feedbackStr);
+    bool Model::WordleManager::validateGuess(const std::string& guess) {
+        if (guess.length() != WORD_SIZE) {
+            this->result = "Invalid guess length.";
+            return false;
+        }
+        if (this->answer.length() != WORD_SIZE) {
+            this->result = "Internal error: answer length mismatch.";
+            return false;
+        }
+        if (!wordDict->Contains(guess)) {
+            this->result = "Invalid word.";
+            return false;
+        }
+        return true;
+    }
 
-		if (guess == this->answer) {
-			this->result = "Correct!";
-		}
-		else if (this->guesses.size() >= NUMBER_OF_GUESSES) {
-			this->result = "Game Over. The word was: " + this->answer;
-		}
-		else {
-			this->result = feedbackStr;
-		}
+    std::string Model::WordleManager::getFeedbackString(const std::vector<Model::Feedback>& feedback) {
+        std::string feedbackStr;
+        for (auto f : feedback) {
+            switch (f) {
+            case Feedback::Correct: feedbackStr += "Correct "; break;
+            case Feedback::WrongPosition: feedbackStr += "Wrong Placement "; break;
+            case Feedback::Incorrect: feedbackStr += "Incorrect "; break;
+            }
+        }
+        return feedbackStr;
+    }
 
-		return this->lastFeedback;
-	}
+    void Model::WordleManager::updateResult(const std::string& guess) {
+        if (guess == this->answer) {
+            this->result = "Correct!";
+        }
+        else if (this->guesses.size() >= NUMBER_OF_GUESSES) {
+            this->result = "Game Over. The word was: " + this->answer;
+        }
+        else {
+            this->result = getFeedbackString(this->lastFeedback);
+        }
+    }
 
 	std::vector<std::string> WordleManager::getWordList() const {
 		return this->guesses;

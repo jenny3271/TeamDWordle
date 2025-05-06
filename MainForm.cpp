@@ -124,13 +124,20 @@ namespace  TeamDWordle
 
 	void MainForm::loadLastGame()
 	{
-		this->myManager->setRandomWord(this->userProfile->GetCorrectWord());
-		for each (std::string guess in this->userProfile->GetGuesses()) {
-			this->setCurrentRowTiles(this->currentRowIndex);
-			for (int i = 0; i < guess.length(); ++i) {
-				this->currentRowTiles[i]->Text = System::Char::ToUpper(guess[i]).ToString();
+		try {
+			this->myManager->setRandomWord(this->userProfile->GetCorrectWord());
+			for each (std::string guess in this->userProfile->GetGuesses()) {
+				this->setCurrentRowTiles(this->currentRowIndex);
+				for (int i = 0; i < guess.length(); ++i) {
+					this->currentRowTiles[i]->Text = System::Char::ToUpper(guess[i]).ToString();
+				}
+				this->enterButton_Click(nullptr, nullptr);
 			}
-			this->enterButton_Click(nullptr, nullptr);
+		}
+		catch (const std::exception& ex) {
+			System::String^ message = "Could Not Load Last Game \n";
+			message += "Error: " + gcnew System::String(ex.what()) + "\n";
+			MessageBox::Show(message, "Error Loading");
 		}
 	}
 
@@ -227,26 +234,8 @@ namespace  TeamDWordle
 	void MainForm::EndGame(bool gameWon, int guessCount)
 	{
 		std::vector<std::string> cleanedGuesses;
-
-		for (const std::string& fullGuess : this->myManager->GetGuesses()) {
-			size_t arrowPos = fullGuess.find("->");
-			if (arrowPos != std::string::npos) {
-				std::string word = fullGuess.substr(0, arrowPos);
-				word.erase(word.find_last_not_of(" \t\r\n") + 1);
-				cleanedGuesses.push_back(word);
-			}
-			else {
-				cleanedGuesses.push_back(fullGuess);
-			}
-		}
-
-		this->userProfile->UpdateStats(
-			gameWon,
-			guessCount,
-			this->myManager->GetCorrectWord(),
-			cleanedGuesses,
-			this->myManager->GetCurrentGuessIndex()
-		);
+		this->userProfile->UpdateStats(gameWon,guessCount);
+		this->userProfile->UpdateLoadedGame("", cleanedGuesses, 0);
 
 		System::String^ message = "Game Over!\n";
 		message += "Username: " + gcnew System::String(this->userProfile->GetUsername().c_str()) + "\n";
@@ -292,45 +281,14 @@ namespace  TeamDWordle
 			return;
 		}
 
-		// Score & color the tiles using WordleManager
 		std::vector<Model::Feedback> feedback = this->myManager->Guess(guess);
-
-		for (int i = 0; i < feedback.size(); ++i) {
-			switch (feedback[i]) {
-			case Model::Feedback::Correct:
-				this->currentRowTiles[i]->BackColor = System::Drawing::ColorTranslator::FromHtml("#6CA965");
-				this->currentRowTiles[i]->ForeColor = System::Drawing::Color::White;
-				break;
-			case Model::Feedback::WrongPosition:
-				this->currentRowTiles[i]->BackColor = System::Drawing::ColorTranslator::FromHtml("#C8B653");
-				this->currentRowTiles[i]->ForeColor = System::Drawing::Color::White;
-				break;
-			case Model::Feedback::Incorrect:
-				this->currentRowTiles[i]->BackColor = System::Drawing::ColorTranslator::FromHtml("#787C7F");
-				this->currentRowTiles[i]->ForeColor = System::Drawing::Color::White;
-				break;
-			}
-		}
-
+		ScoreAndColorWordTiles(feedback);
 		ColorUsedLetterKeys(guess, feedback);
 
-		// Check result and show a message if game ends
 		System::String^ result = gcnew System::String(this->myManager->getResult().c_str());
-
-		if (result == "Correct!") {
-			MessageBox::Show("Congratulations! You guessed the word!", "You Win");
-			this->keyEnter->Enabled = false;
-			this->keyBackspace->Enabled = false;
-			this->EndGame(true, this->currentRowIndex + 1);
-			return;
-		}
-		else if (result->StartsWith("Game Over")) {
-			MessageBox::Show(result, "Game Over");
-			this->keyEnter->Enabled = false;
-			this->keyBackspace->Enabled = false;
-			this->EndGame(false, this->currentRowIndex + 1);
-			return;
-		}
+		bool retFlag;
+		CheckResultAndShowMessage(result, retFlag);
+		if (retFlag) return;
 
 		if (this->currentRowIndex < 5)
 		{
@@ -350,14 +308,48 @@ namespace  TeamDWordle
 				cleanedGuesses.push_back(fullGuess);
 			}
 		}
+		this->userProfile->UpdateLoadedGame(this->myManager->GetCorrectWord(),
+			cleanedGuesses, this->myManager->GetCurrentGuessIndex());
+	}
 
-		this->userProfile->UpdateStats(
-			"",
-			this->currentRowIndex - 1,
-			this->myManager->GetCorrectWord(),
-			cleanedGuesses,
-			this->myManager->GetCurrentGuessIndex()
-		);
+	void MainForm::CheckResultAndShowMessage(System::String^ result, bool& retFlag)
+	{
+		retFlag = true;
+		if (result == "Correct!") {
+			MessageBox::Show("Congratulations! You guessed the word!", "You Win");
+			this->keyEnter->Enabled = false;
+			this->keyBackspace->Enabled = false;
+			this->EndGame(true, this->currentRowIndex + 1);
+			return;
+		}
+		else if (result->StartsWith("Game Over")) {
+			MessageBox::Show(result, "Game Over");
+			this->keyEnter->Enabled = false;
+			this->keyBackspace->Enabled = false;
+			this->EndGame(false, this->currentRowIndex + 1);
+			return;
+		}
+		retFlag = false;
+	}
+
+	void MainForm::ScoreAndColorWordTiles(std::vector<Model::Feedback>& feedback)
+	{
+		for (int i = 0; i < feedback.size(); ++i) {
+			switch (feedback[i]) {
+			case Model::Feedback::Correct:
+				this->currentRowTiles[i]->BackColor = System::Drawing::ColorTranslator::FromHtml("#6CA965");
+				this->currentRowTiles[i]->ForeColor = System::Drawing::Color::White;
+				break;
+			case Model::Feedback::WrongPosition:
+				this->currentRowTiles[i]->BackColor = System::Drawing::ColorTranslator::FromHtml("#C8B653");
+				this->currentRowTiles[i]->ForeColor = System::Drawing::Color::White;
+				break;
+			case Model::Feedback::Incorrect:
+				this->currentRowTiles[i]->BackColor = System::Drawing::ColorTranslator::FromHtml("#787C7F");
+				this->currentRowTiles[i]->ForeColor = System::Drawing::Color::White;
+				break;
+			}
+		}
 	}
 
 	int getColorRank(System::Drawing::Color color) {
@@ -463,14 +455,8 @@ namespace  TeamDWordle
 				cleanedGuesses.push_back(fullGuess);
 			}
 		}
-
-		this->userProfile->UpdateStats(
-			"",
-			0,
-			this->myManager->GetCorrectWord(),
-			cleanedGuesses,
-			this->myManager->GetCurrentGuessIndex()
-		);
+		this->userProfile->UpdateLoadedGame(this->myManager->GetCorrectWord(),
+			cleanedGuesses, this->myManager->GetCurrentGuessIndex());
 	}
 
 	void MainForm::newGameButton_Click(System::Object^ sender, System::EventArgs^ e)
