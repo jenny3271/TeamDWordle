@@ -73,7 +73,13 @@ namespace  TeamDWordle
 		InitializeComponent();
 		this->userProfile = userProfile;
 		this->allowReuseLetters = allowReuseLetters;
+
+		this->myDictionary = new Model::WordDictionary();
+		this->myDictionary->Load("./dictionary.txt", WORD_SIZE);
+		this->myManager = new Model::WordleManager(myDictionary, this->allowReuseLetters);
+
 		this->setupUI();
+
 		bool loaded = false;
 		if (!loaded) {
             this->loadLastGame();
@@ -83,26 +89,28 @@ namespace  TeamDWordle
 
 	void MainForm::setupUI()
 	{
-		this->myDictionary = new Model::WordDictionary();
-		this->myDictionary->Load("./dictionary.txt", 5);
+		setWordleTiles();
+		setsLetterKeys();
+		setEventHandlers();
+	}
 
-		this->myManager = new Model::WordleManager(myDictionary, this->allowReuseLetters);
-
-		this->KeyPreview = true;
-		this->KeyDown += gcnew KeyEventHandler(this, &MainForm::mainForm_KeyDown);
-
+	void MainForm::setWordleTiles()
+	{
 		this->currentRowIndex = 0;
 		this->currentRowTiles = gcnew Generic::List<Label^>();
 		this->currentRowTiles->AddRange(gcnew array<Label^>{
 			this->Guess1Tile1, this->Guess1Tile2, this->Guess1Tile3, this->Guess1Tile4, this->Guess1Tile5
 		});
+	}
 
+	void MainForm::setsLetterKeys()
+	{
 		this->letterKeys = gcnew System::Collections::Generic::Dictionary<wchar_t, Button^>();
 
 		array<Button^>^ keys = gcnew array<Button^>{
 			this->keyQ, this->keyW, this->keyE, this->keyR, this->keyT, this->keyY, this->keyU, this->keyI, this->keyO, this->keyP,
-		    this->keyA, this->keyS, this->keyD, this->keyF, this->keyG, this->keyH, this->keyJ, this->keyK, this->keyL,
-			this->keyZ, this->keyX, this->keyC, this->keyV, this->keyB, this->keyN, this->keyM
+				this->keyA, this->keyS, this->keyD, this->keyF, this->keyG, this->keyH, this->keyJ, this->keyK, this->keyL,
+				this->keyZ, this->keyX, this->keyC, this->keyV, this->keyB, this->keyN, this->keyM
 		};
 
 		for each (Button ^ key in keys)
@@ -114,7 +122,12 @@ namespace  TeamDWordle
 				key->Click += gcnew EventHandler(this, &MainForm::letterButton_Click);
 			}
 		}
+	}
 
+	void MainForm::setEventHandlers()
+	{
+		this->KeyPreview = true;
+		this->KeyDown += gcnew KeyEventHandler(this, &MainForm::mainForm_KeyDown);
 		this->keyEnter->Click += gcnew EventHandler(this, &MainForm::enterButton_Click);
 		this->keyBackspace->Click += gcnew EventHandler(this, &MainForm::deleteButton_Click);
 		this->bttnNewGame->Click += gcnew EventHandler(this, &MainForm::newGameButton_Click);
@@ -260,7 +273,7 @@ namespace  TeamDWordle
 		if (!this->isRowComplete(this->currentRowTiles))
 		{
 			MessageBox::Show(
-				"Please fill all 5 letters before submitting.",
+				"Please fill all" + WORD_SIZE + "letters before submitting.",
 				"Incomplete guess",
 				MessageBoxButtons::OK,
 				MessageBoxIcon::Warning
@@ -290,11 +303,21 @@ namespace  TeamDWordle
 		CheckResultAndShowMessage(result, retFlag);
 		if (retFlag) return;
 
-		if (this->currentRowIndex < 5)
+		moveToNextRow();
+		saveProgress();
+	}
+
+	void MainForm::moveToNextRow()
+	{
+		if (this->currentRowIndex <= NUMBER_OF_GUESSES)
 		{
 			this->currentRowIndex++;
 			this->setCurrentRowTiles(this->currentRowIndex);
 		}
+	}
+
+	void MainForm::saveProgress()
+	{
 		std::vector<std::string> cleanedGuesses;
 
 		for (const std::string& fullGuess : this->myManager->GetGuesses()) {

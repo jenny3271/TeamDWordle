@@ -15,14 +15,164 @@ namespace TeamDWordle {
 	/// <summary>
 	/// Summary for MainForm
 	/// </summary>
+	/// <seealso cref="System::Windows::Forms::Form" />
 	public ref class MainForm : public System::Windows::Forms::Form
 	{
-	public:
-		MainForm(void);
-
-		MainForm(Model::UserProfile* userProfile, bool allowReuseLetters);
-
+	private:				
+		/// <summary>
+		///     My dictionary
+		/// </summary>
+		Model::WordDictionary* myDictionary;		
+		/// <summary>
+		///     My Wordle manager
+		/// </summary>
+		Model::WordleManager* myManager;
+		/// <summary>
+		///     The user profile
+		/// </summary>
+		Model::UserProfile* userProfile;		
+		/// <summary>
+		///     The boolean of allowed reuse letters
+		/// </summary>
+		bool allowReuseLetters;
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		System::ComponentModel::Container^ components;		
+		/// <summary>
+		///     The current row tiles
+		/// </summary>
+		System::Collections::Generic::List<System::Windows::Forms::Label^>^ currentRowTiles;		
+		/// <summary>
+		///     The letter keys
+		/// </summary>
+		System::Collections::Generic::Dictionary<wchar_t, Button^>^ letterKeys;		
+		/// <summary>
+		///     The current row index
+		/// </summary>
+		int currentRowIndex;		
+		/// <summary>
+		///     Determines whether [is row complete] [the specified row tiles].
+		/// </summary>
+		/// <param name="rowTiles">The row tiles.</param>
+		/// <returns>
+		///   <c>true</c> if [is row complete] [the specified row tiles]; otherwise, <c>false</c>.
+		/// </returns>
+		static bool isRowComplete(Generic::List<Label^>^ rowTiles);		
+		/// <summary>
+		///     Setups the UI.
+		/// </summary>
+		void setupUI();		
+		/// <summary>
+		///     Sets and initializes the wordle tiles.
+		/// </summary>
+		void setWordleTiles();
+		/// <summary>
+		///     Sets and initializes the letter keys.
+		/// </summary>
+		void setsLetterKeys();
+		/// <summary>
+		///     Sets the event handlers.
+		/// </summary>
+		void setEventHandlers();
+		/// <summary>
+		///     Sets the current row tiles.
+		/// </summary>
+		/// <param name="index">The index.</param>
+		void setCurrentRowTiles(int index);		
+		/// <summary>
+		///     Starts the new game.
+		/// </summary>
 		void startNewGame();
+		/// <summary>
+		///     Processes the letter input.
+		/// </summary>
+		/// <param name="letter">The letter.</param>
+		void processLetterInput(wchar_t letter);			
+		/// <summary>
+		///     Loads the last game.
+		/// </summary>
+		void loadLastGame();		
+		/// <summary>
+		///     Saves the progress of what guesses are entered.
+		/// </summary>
+		void saveProgress();		
+		/// <summary>
+		///     Moves to next row of the guess for letter entry.
+		/// </summary>
+		void moveToNextRow();
+
+	public:		
+		/// <summary>
+		///     Initializes a new instance of the <see cref="MainForm"/> class.
+		/// </summary>
+		MainForm(void);		
+		/// <summary>
+		///     Initializes a new instance of the <see cref="MainForm"/> class.
+		/// </summary>
+		/// <param name="userProfile">The user profile.</param>
+		/// <param name="allowReuseLetters">if set to <c>true</c> [allow reuse letters].</param>
+		MainForm(Model::UserProfile* userProfile, bool allowReuseLetters);	
+		/// <summary>
+		///     Ends the game.
+		/// </summary>
+		/// <param name="gameWon">if set to <c>true</c> [game won].</param>
+		/// <param name="guessCount">The guess count.</param>
+		void EndGame(bool gameWon, int guessCount);		
+		/// <summary>
+		///     Checks the result and show message.
+		/// </summary>
+		/// <param name="result">The result.</param>
+		/// <param name="retFlag">The ret flag.</param>
+		void CheckResultAndShowMessage(System::String^ result, bool& retFlag);		
+		/// <summary>
+		///     Scores the and color word tiles.
+		/// </summary>
+		/// <param name="feedback">The feedback.</param>
+		void ScoreAndColorWordTiles(std::vector<Model::Feedback>& feedback);		
+		/// <summary>
+		///     Colors the used letter keys.
+		/// </summary>
+		/// <param name="guess">The guess.</param>
+		/// <param name="feedback">The feedback.</param>
+		void ColorUsedLetterKeys(std::string& guess, std::vector<Model::Feedback>& feedback);
+		
+		/// <summary>
+		///     Button Click for exit game.
+		/// </summary>
+		/// <param name="sender">The sender.</param>
+		/// <param name="e">The e.</param>
+		void exitGameButton_Click(System::Object^ sender, System::EventArgs^ e);		
+		/// <summary>
+		///     Button Click for new game.
+		/// </summary>
+		/// <param name="sender">The sender.</param>
+		/// <param name="e">The e.</param>
+		void newGameButton_Click(System::Object^ sender, System::EventArgs^ e);		
+		/// <summary>
+		///     Button Click for letters.
+		/// </summary>
+		/// <param name="sender">The sender.</param>
+		/// <param name="e">The e.</param>
+		void letterButton_Click(System::Object^ sender, System::EventArgs^ e);		
+		/// <summary>
+		///     Key Down for the Main Form.
+		/// </summary>
+		/// <param name="sender">The sender.</param>
+		/// <param name="e">The e.</param>
+		void mainForm_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e);		
+		/// <summary>
+		///     Button Click for enter.
+		/// </summary>
+		/// <param name="sender">The sender.</param>
+		/// <param name="e">The e.</param>
+		void enterButton_Click(System::Object^ sender, System::EventArgs^ e);
+		/// <summary>
+		///     Button Click for delete.
+		/// </summary>
+		/// <param name="sender">The sender.</param>
+		/// <param name="e">The e.</param>
+		void deleteButton_Click(System::Object^ sender, System::EventArgs^ e);
 
 	protected:
 		/// <summary>
@@ -62,7 +212,6 @@ namespace TeamDWordle {
 	private: System::Windows::Forms::Label^ Guess6Tile4;
 	private: System::Windows::Forms::Label^ Guess6Tile5;
 	private: System::Windows::Forms::TableLayoutPanel^ keyboardPanelRow1;
-
 	private: System::Windows::Forms::Button^ keyQ;
 	private: System::Windows::Forms::Button^ keyW;
 	private: System::Windows::Forms::Button^ keyE;
@@ -82,7 +231,6 @@ namespace TeamDWordle {
 	private: System::Windows::Forms::Button^ keyH;
 	private: System::Windows::Forms::Button^ keyJ;
 	private: System::Windows::Forms::Button^ keyK;
-
 	private: System::Windows::Forms::Button^ keyL;
 	private: System::Windows::Forms::TableLayoutPanel^ keyboardPanelRow3;
 	private: System::Windows::Forms::Button^ keyEnter;
@@ -96,19 +244,6 @@ namespace TeamDWordle {
 	private: System::Windows::Forms::Button^ keyBackspace;
 	private: System::Windows::Forms::Button^ bttnNewGame;
 	private: System::Windows::Forms::Button^ bttnExitGame;
-
-	protected:
-
-	protected:
-
-	private:
-		Model::UserProfile* userProfile;
-		bool allowReuseLetters;
-
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -1172,31 +1307,7 @@ namespace TeamDWordle {
 			this->ResumeLayout(false);
 
 		}
-
 #pragma endregion
-		System::Collections::Generic::List<System::Windows::Forms::Label^>^ currentRowTiles;
-		System::Collections::Generic::Dictionary<wchar_t, Button^>^ letterKeys;
-		Model::WordDictionary* myDictionary;
-		Model::WordleManager* myManager;
-		int currentRowIndex;
-		static bool isRowComplete(Generic::List<Label^>^ rowTiles);
-
-		void EndGame(bool gameWon, int guessCount);
-		void setupUI();
-		void setCurrentRowTiles(int index);
-		void loadLastGame();
-
-		void exitGameButton_Click(System::Object^ sender, System::EventArgs^ e);
-		void newGameButton_Click(System::Object^ sender, System::EventArgs^ e);
-		void letterButton_Click(System::Object^ sender, System::EventArgs^ e);
-		void processLetterInput(wchar_t letter);
-		void mainForm_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e);
-		void enterButton_Click(System::Object^ sender, System::EventArgs^ e);
-		void CheckResultAndShowMessage(System::String^ result, bool& retFlag);
-		void ScoreAndColorWordTiles(std::vector<Model::Feedback>& feedback);
-		void ColorUsedLetterKeys(std::string& guess, std::vector<Model::Feedback>& feedback);
-		void deleteButton_Click(System::Object^ sender, System::EventArgs^ e);
-
 	private: System::Void MainForm_Load(System::Object^ sender, System::EventArgs^ e) {
 	}
 
