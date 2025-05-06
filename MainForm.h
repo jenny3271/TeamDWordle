@@ -1184,6 +1184,7 @@ namespace TeamDWordle {
 		void EndGame(bool gameWon, int guessCount);
 		void setupUI();
 		void setCurrentRowTiles(int index);
+		void loadLastGame();
 
 		void exitGameButton_Click(System::Object^ sender, System::EventArgs^ e);
 		void newGameButton_Click(System::Object^ sender, System::EventArgs^ e);

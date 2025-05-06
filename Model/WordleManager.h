@@ -71,6 +71,11 @@ namespace Model {
 		/// </summary>
 		void setRandomWord();		
 		/// <summary>
+		///     Sets the random word.
+		/// </summary>
+		/// <param name="word">The word.</param>
+		void setRandomWord(std::string word);
+		/// <summary>
 		///     Guesses the specified guess.
 		/// </summary>
 		/// <param name="guess">The guess.</param>
@@ -91,6 +96,21 @@ namespace Model {
 		/// </summary>
 		/// <returns>the result</returns>
 		std::string getResult() const;
+		/// <summary>
+        ///     Gets the correct word.
+        /// </summary>
+        /// <returns>The correct answer.</returns>
+		std::string GetCorrectWord() const;
+		/// <summary>
+		///     Gets the list of guesses
+		/// </summary>
+		/// <returns>the guesses</returns>
+		std::vector<std::string> GetGuesses() const;
+		/// <summary>
+		///     Gets the current guess index (i.e., total guesses made).
+		/// </summary>
+		/// <returns>The number of guesses made.</returns>
+		int GetCurrentGuessIndex() const;
 	};
 };
 

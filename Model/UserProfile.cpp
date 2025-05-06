@@ -26,6 +26,20 @@ namespace Model
 		this->lastCorrectGuessIndex = -1;
 	}
 
+	UserProfile::UserProfile(const std::string& username, const std::string& correctWord, const std::vector<std::string> guesses, int totalGuessesMade)
+	{
+		this->username = username;
+		this->totalGamesPlayed = 0;
+		this->wins = 0;
+		this->currentWinStreak = 0;
+		this->maxWinStreak = 0;
+		this->guessDistribution.fill(0);
+		this->lastCorrectGuessIndex = -1;
+		this->correctWord = correctWord;
+		this->guesses = guesses;
+		this->totalGuessesMade = totalGuessesMade;
+	}
+
 	std::string UserProfile::GetUsername() const {
 		return this->username;
 	}
@@ -58,7 +72,19 @@ namespace Model
 		return this->guessDistribution;
 	}
 
-	void UserProfile::UpdateStats(bool gameWon, int guessCount) {
+	std::string UserProfile::GetCorrectWord() const {
+		return this->correctWord;
+	}
+
+	const std::vector<std::string> UserProfile::GetGuesses() const {
+		return this->guesses;
+	}
+
+	int UserProfile::GetTotalGuessesMade() const {
+		return this->totalGuessesMade;
+	}
+
+	void UserProfile::UpdateStats(bool gameWon, int guessCount, const std::string& correctWord, const std::vector<std::string>& guesses, int totalGuessesMade) {
 		this->totalGamesPlayed++;
 
 		if (gameWon) {
@@ -85,10 +111,14 @@ namespace Model
 			this->currentWinStreak = 0;
 			this->lastCorrectGuessIndex = -1;
 		}
+
+		this->correctWord = correctWord;
+		this->guesses = guesses;
+		this->totalGuessesMade = totalGuessesMade;
 	}
 
 	std::string UserProfile::Serialize() const {
-		// Format: username|totalGamesPlayed|wins|currentWinStreak|maxWinStreak|guess1,guess2,...,guess6
+		// Format: username|totalGamesPlayed|wins|currentWinStreak|maxWinStreak|guess1,guess2,...,guess6|correctWord|guess1 guess2 guess3 ...|totalGuessesMade
 		std::ostringstream oss;
 		oss << this->username << "|"
 			<< this->totalGamesPlayed << "|"
@@ -102,6 +132,15 @@ namespace Model
 				oss << ",";
 			}
 		}
+
+		oss << "|"
+			<< this->correctWord << "|";
+
+		for (const auto& guess : this->guesses) {
+			oss << guess << " ";
+		}
+		oss << "|"
+			<< this->totalGuessesMade;
 
 		return oss.str();
 	}
@@ -133,12 +172,28 @@ namespace Model
 			guessDistribution[i] = std::stoi(token);
 		}
 
+		std::getline(iss, token, '|');
+		std::string correctWord = token;
+
+		std::getline(iss, token, '|');
+		std::vector<std::string> guesses;
+		std::istringstream guessListStream(token);
+		while (std::getline(guessListStream, token, ' ')) {
+			guesses.push_back(token);
+		}
+
+		std::getline(iss, token, '|');
+		int totalGuessesMade = std::stoi(token);
+
 		UserProfile profile(username);
 		profile.totalGamesPlayed = totalGamesPlayed;
 		profile.wins = wins;
 		profile.currentWinStreak = currentWinStreak;
 		profile.maxWinStreak = maxWinStreak;
 		profile.guessDistribution = guessDistribution;
+		profile.correctWord = correctWord;
+		profile.guesses = guesses;
+		profile.totalGuessesMade = totalGuessesMade;
 
 		return profile;
 	}

@@ -24,9 +24,9 @@ void InitConsole()
 [STAThread]
 int main(array<String^>^ args)
 {
-    #ifdef SHOW_ANSWER
-	    InitConsole();
-    #endif
+#ifdef SHOW_ANSWER
+	InitConsole();
+#endif
 
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
@@ -37,26 +37,21 @@ int main(array<String^>^ args)
 		bool allowReuse = login->GetAllowReuseLetters();
 		std::string username = msclr::interop::marshal_as<std::string>(usernameManaged);
 
-		// Load profiles
 		Model::UserProfilesManager profileManager("UserProfiles.txt");
 
 		Model::UserProfile* userProfile = nullptr;
 		if (profileManager.HasUser(username)) {
-			// Get existing profile
 			userProfile = new Model::UserProfile(profileManager.GetUser(username));
 		}
 		else {
-			// Create new profile
 			userProfile = new Model::UserProfile(username);
 			profileManager.AddUser(*userProfile);
 		}
 
-		// Launch main game
 		TeamDWordle::MainForm^ game = gcnew TeamDWordle::MainForm(userProfile, allowReuse);
 		Application::Run(game);
 
-		// Save updated user profile back to the manager
-		profileManager.AddUser(*userProfile); // Replaces or adds updated profile
+		profileManager.AddUser(*userProfile);
 		profileManager.SaveProfiles();
 
 		delete userProfile;
@@ -79,6 +74,11 @@ namespace  TeamDWordle
 		this->userProfile = userProfile;
 		this->allowReuseLetters = allowReuseLetters;
 		this->setupUI();
+		bool loaded = false;
+		if (!loaded) {
+            this->loadLastGame();
+		}
+		loaded = true;
 	}
 
 	void MainForm::setupUI()
@@ -120,6 +120,18 @@ namespace  TeamDWordle
 		this->bttnNewGame->Click += gcnew EventHandler(this, &MainForm::newGameButton_Click);
 		this->bttnExitGame->Click += gcnew EventHandler(this, &MainForm::exitGameButton_Click);
 		this->ActiveControl = this->keyEnter;
+	}
+
+	void MainForm::loadLastGame()
+	{
+		this->myManager->setRandomWord(this->userProfile->GetCorrectWord());
+		for each (std::string guess in this->userProfile->GetGuesses()) {
+			this->setCurrentRowTiles(this->currentRowIndex);
+			for (int i = 0; i < guess.length(); ++i) {
+				this->currentRowTiles[i]->Text = System::Char::ToUpper(guess[i]).ToString();
+			}
+			this->enterButton_Click(nullptr, nullptr);
+		}
 	}
 
 	MainForm::~MainForm()
@@ -214,8 +226,27 @@ namespace  TeamDWordle
 
 	void MainForm::EndGame(bool gameWon, int guessCount)
 	{
+		std::vector<std::string> cleanedGuesses;
 
-		this->userProfile->UpdateStats(gameWon, guessCount);
+		for (const std::string& fullGuess : this->myManager->GetGuesses()) {
+			size_t arrowPos = fullGuess.find("->");
+			if (arrowPos != std::string::npos) {
+				std::string word = fullGuess.substr(0, arrowPos);
+				word.erase(word.find_last_not_of(" \t\r\n") + 1);
+				cleanedGuesses.push_back(word);
+			}
+			else {
+				cleanedGuesses.push_back(fullGuess);
+			}
+		}
+
+		this->userProfile->UpdateStats(
+			gameWon,
+			guessCount,
+			this->myManager->GetCorrectWord(),
+			cleanedGuesses,
+			this->myManager->GetCurrentGuessIndex()
+		);
 
 		System::String^ message = "Game Over!\n";
 		message += "Username: " + gcnew System::String(this->userProfile->GetUsername().c_str()) + "\n";
@@ -306,6 +337,27 @@ namespace  TeamDWordle
 			this->currentRowIndex++;
 			this->setCurrentRowTiles(this->currentRowIndex);
 		}
+		std::vector<std::string> cleanedGuesses;
+
+		for (const std::string& fullGuess : this->myManager->GetGuesses()) {
+			size_t arrowPos = fullGuess.find("->");
+			if (arrowPos != std::string::npos) {
+				std::string word = fullGuess.substr(0, arrowPos);
+				word.erase(word.find_last_not_of(" \t\r\n") + 1);
+				cleanedGuesses.push_back(word);
+			}
+			else {
+				cleanedGuesses.push_back(fullGuess);
+			}
+		}
+
+		this->userProfile->UpdateStats(
+			"",
+			this->currentRowIndex - 1,
+			this->myManager->GetCorrectWord(),
+			cleanedGuesses,
+			this->myManager->GetCurrentGuessIndex()
+		);
 	}
 
 	int getColorRank(System::Drawing::Color color) {
@@ -398,6 +450,27 @@ namespace  TeamDWordle
 		this->ActiveControl = this->keyEnter;
 		this->keyEnter->Enabled = true;
 		this->keyBackspace->Enabled = true;
+		std::vector<std::string> cleanedGuesses;
+
+		for (const std::string& fullGuess : this->myManager->GetGuesses()) {
+			size_t arrowPos = fullGuess.find("->");
+			if (arrowPos != std::string::npos) {
+				std::string word = fullGuess.substr(0, arrowPos);
+				word.erase(word.find_last_not_of(" \t\r\n") + 1);
+				cleanedGuesses.push_back(word);
+			}
+			else {
+				cleanedGuesses.push_back(fullGuess);
+			}
+		}
+
+		this->userProfile->UpdateStats(
+			"",
+			0,
+			this->myManager->GetCorrectWord(),
+			cleanedGuesses,
+			this->myManager->GetCurrentGuessIndex()
+		);
 	}
 
 	void MainForm::newGameButton_Click(System::Object^ sender, System::EventArgs^ e)

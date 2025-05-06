@@ -83,6 +83,19 @@ namespace Model {
 		this->lastFeedback.clear();
 	}
 
+	void Model::WordleManager::setRandomWord(std::string word) {
+		if (word.length() != WORD_SIZE) {
+			throw std::invalid_argument("Word length must be " + std::to_string(WORD_SIZE) + " characters.");
+		}
+        #ifdef SHOW_ANSWER
+		    std::cout << "Set answer to: " << word << std::endl;
+        #endif
+		this->answer = toLowerCase(word);
+		this->guesses.clear();
+		this->result = "";
+		this->lastFeedback.clear();
+	}
+
 	std::vector<Model::Feedback> Model::WordleManager::Guess(std::string guess) {
 		this->lastFeedback.clear();
 		guess = toLowerCase(guess);
@@ -126,7 +139,6 @@ namespace Model {
 		return this->lastFeedback;
 	}
 
-
 	std::vector<std::string> WordleManager::getWordList() const {
 		return this->guesses;
 	}
@@ -139,10 +151,21 @@ namespace Model {
 		return this->result;
 	}
 
-
 	std::string WordleManager::toLowerCase(const std::string& str) {
 		std::string lower = str;
 		std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 		return lower;
+	}
+
+	std::string WordleManager::GetCorrectWord() const {
+		return this->answer;
+	}
+
+	std::vector<std::string> WordleManager::GetGuesses() const {
+		return this->guesses;
+	}
+
+	int WordleManager::GetCurrentGuessIndex() const {
+		return static_cast<int>(this->guesses.size());
 	}
 }

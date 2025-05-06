@@ -1,2 +1,1 @@
-kate|18|18|18|18|5,4,2,1,0,0|myoid|myoid -> Correct Correct Correct Correct Correct  |1
-jenny|1|1|1|1|1,0,0,0,0,0
+kate|42|42|42|42|9,11,2,3,0,0|lewis|happy lewis |2

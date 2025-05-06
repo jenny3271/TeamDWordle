@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <string>
+#include <vector>
 
 namespace Model
 {
@@ -18,18 +19,30 @@ namespace Model
 		int maxWinStreak; ///< Maximum winning streak.
 		int lastCorrectGuessIndex; // Stores the zero-based index of the last correct guess
 		std::array<int, 6> guessDistribution; ///< Distribution of guesses (1-6)
+		std::string correctWord; ///< The correct word for the last game.
+		std::vector<std::string> guesses; ///< The guesses made in the last game.
+		int totalGuessesMade; ///< The number of guesses made in the last game.
 
 	public:
 		/// <summary>
-		/// Initializes a new instance of the UserProfile class.
-		/// </summary>
-		/// <param name="username">The username for this profile.</param>
+	    /// Initializes a new instance of the UserProfile class.
+	    /// </summary>
+	    /// <param name="username">The username for this profile.</param>
 		UserProfile(const std::string& username);
-		
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="UserProfile"/> class.
 		/// </summary>
 		UserProfile();
+		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UserProfile"/> class.
+		/// </summary>
+		/// <param name="username">The username.</param>
+		/// <param name="correctWord">The correct word.</param>
+		/// <param name="guesses">The guesses.</param>
+		/// <param name="totalGuessesMade">The total guesses made.</param>
+		UserProfile(const std::string& username, const std::string& correctWord, const std::vector<std::string> guesses, int totalGuessesMade);
 
 		/// <summary>
 		/// Gets the username associated with this profile.
@@ -80,11 +93,32 @@ namespace Model
 		const std::array<int, 6>& GetGuessDistribution() const;
 
 		/// <summary>
+        /// Gets the correct word for the last game.
+        /// </summary>
+        /// <returns>The correct word as a string.</returns>
+		std::string GetCorrectWord() const;
+
+		/// <summary>
+		/// Gets the guesses made in the last game.
+		/// </summary>
+		/// <returns>the guesses</returns>
+		const std::vector<std::string> GetGuesses() const;
+
+		/// <summary>
+		/// Gets the number of guesses made in the last game.
+		/// </summary>
+		/// <returns>The total number of guesses made as an integer.</returns>
+		int GetTotalGuessesMade() const;
+
+		/// <summary>
 		/// Updates the statistics for a completed game.
 		/// </summary>
-		/// <param name="gameWon">True if the game was won, otherwise false.</param>
-		/// <param name="guessCount">The number of guesses it took to solve the puzzle.</param>
-		void UpdateStats(bool gameWon, int guessCount);
+		/// <param name="gameWon">if set to <c>true</c> [game won].</param>
+		/// <param name="guessCount">The guess count.</param>
+		/// <param name="correctWord">The correct word.</param>
+		/// <param name="guesses">The guesses.</param>
+		/// <param name="totalGuessesMade">The total guesses made.</param>
+		void UpdateStats(bool gameWon, int guessCount, const std::string& correctWord, const std::vector<std::string>& guesses, int totalGuessesMade);
 
 		/// <summary>
 		/// Serializes the user profile to a string for file saving.
